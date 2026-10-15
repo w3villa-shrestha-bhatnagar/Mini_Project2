@@ -146,7 +146,7 @@ export const Profile = () => {
           onClick={handleDownloadProfilePdf}
           disabled={downloadingPdf}
           className="btn btn-secondary"
-          style={{ borderColor: 'rgba(56, 189, 248, 0.4)', color: 'var(--primary)' }}
+          style={{ borderColor: 'rgba(236, 72, 153, 0.4)', color: 'var(--primary)' }}
           title="Download profile information in PDF format"
         >
           <Download size={18} />
@@ -168,8 +168,8 @@ export const Profile = () => {
                   height: '100%',
                   borderRadius: '50%',
                   objectFit: 'cover',
-                  border: '3px solid var(--primary)',
-                  boxShadow: '0 0 25px rgba(56, 189, 248, 0.25)'
+border: '3px solid var(--primary)',
+              boxShadow: '0 0 25px rgba(236, 72, 153, 0.25)'
                 }}
               />
               <label
@@ -257,7 +257,7 @@ export const Profile = () => {
             {/* Live Countdown if active paid plan */}
             {isPaidActive ? (
               <div style={{
-                background: 'rgba(0, 0, 0, 0.4)',
+                background: 'var(--bg-main)',
                 padding: '14px',
                 borderRadius: 'var(--radius-md)',
                 marginBottom: '16px',

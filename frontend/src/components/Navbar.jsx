@@ -47,7 +47,7 @@ export const Navbar = () => {
       left: 0,
       right: 0,
       height: '72px',
-      background: 'rgba(10, 14, 23, 0.85)',
+      background: 'rgba(255, 255, 255, 0.85)',
       backdropFilter: 'blur(16px)',
       borderBottom: '1px solid var(--border-glass)',
       zIndex: 100,
@@ -61,11 +61,11 @@ export const Navbar = () => {
             width: '38px',
             height: '38px',
             borderRadius: '10px',
-            background: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+            background: 'linear-gradient(135deg, var(--primary), var(--accent-purple))',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(14, 165, 233, 0.4)'
+            boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)'
           }}>
             <Sparkles size={20} color="#fff" />
           </div>
@@ -130,7 +130,7 @@ export const Navbar = () => {
             onClick={() => setIsCartOpen(true)}
             style={{
               position: 'relative',
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: 'rgba(244, 63, 94, 0.08)',
               border: '1px solid var(--border-glass)',
               borderRadius: 'var(--radius-md)',
               padding: '9px 12px',
@@ -171,7 +171,7 @@ export const Navbar = () => {
                 <Link
                   to="/admin"
                   className="btn btn-secondary btn-sm"
-                  style={{ borderColor: 'rgba(56, 189, 248, 0.4)', color: 'var(--primary)' }}
+                  style={{ borderColor: 'rgba(236, 72, 153, 0.4)', color: 'var(--primary)' }}
                   title="Go to Admin Panel"
                 >
                   <ShieldCheck size={16} /> Admin
@@ -193,7 +193,7 @@ export const Navbar = () => {
                   textDecoration: 'none',
                   padding: '4px 8px',
                   borderRadius: 'var(--radius-md)',
-                  background: 'rgba(255, 255, 255, 0.03)',
+                  background: 'rgba(244, 63, 94, 0.06)',
                   border: '1px solid var(--border-glass)'
                 }}
               >

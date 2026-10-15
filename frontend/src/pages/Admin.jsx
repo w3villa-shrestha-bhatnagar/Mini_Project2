@@ -416,7 +416,7 @@ export const Admin = () => {
                   const isSilver = sub.plan === 'silver';
 
                   return (
-                    <tr key={u.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.04)', transition: 'background 0.2s' }}>
+                    <tr key={u.id} style={{ borderBottom: '1px solid var(--border-glass)', transition: 'background 0.2s' }}>
                       {/* Avatar & Name (4.1 visible thumbnail) */}
                       <td style={{ padding: '14px 16px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -569,8 +569,8 @@ export const Admin = () => {
                 key={p}
                 onClick={() => updateQuery({ page: p.toString() })}
                 style={{
-                  background: pagination.page === p ? 'var(--primary)' : 'rgba(255, 255, 255, 0.04)',
-                  color: pagination.page === p ? '#000' : 'var(--text-main)',
+                  background: pagination.page === p ? 'var(--primary)' : 'var(--bg-surface-elevated)',
+                  color: pagination.page === p ? '#fff' : 'var(--text-main)',
                   border: '1px solid var(--border-glass)',
                   borderRadius: 'var(--radius-sm)',
                   width: '32px',

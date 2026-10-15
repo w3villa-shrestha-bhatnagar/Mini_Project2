@@ -14,7 +14,7 @@ export const ProductCard = ({ product }) => {
   return (
     <div className="glass-panel card-hover" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {/* Product Image */}
-      <div style={{ position: 'relative', height: '240px', overflow: 'hidden', background: '#0b111e' }}>
+      <div style={{ position: 'relative', height: '240px', overflow: 'hidden', background: 'var(--bg-surface-elevated)' }}>
         <img
           src={product.image}
           alt={product.title}
@@ -31,7 +31,7 @@ export const ProductCard = ({ product }) => {
           position: 'absolute',
           top: '12px',
           left: '12px',
-          background: 'rgba(10, 14, 23, 0.75)',
+          background: 'rgba(244, 63, 94, 0.1)',
           backdropFilter: 'blur(8px)',
           border: '1px solid var(--border-glass)',
           padding: '4px 10px',

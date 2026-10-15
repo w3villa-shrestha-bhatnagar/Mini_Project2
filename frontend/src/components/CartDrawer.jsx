@@ -104,7 +104,7 @@ export const CartDrawer = () => {
                     display: 'flex',
                     gap: '14px',
                     padding: '12px',
-                    background: 'rgba(255, 255, 255, 0.02)',
+                    background: 'var(--bg-surface-elevated)',
                     border: '1px solid var(--border-glass)',
                     borderRadius: 'var(--radius-md)'
                   }}
@@ -126,7 +126,7 @@ export const CartDrawer = () => {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.3)', borderRadius: '6px', padding: '2px 6px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-main)', borderRadius: '6px', padding: '2px 6px' }}>
                         <button
                           onClick={() => updateQuantity(item.id, -1)}
                           style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}

@@ -117,9 +117,9 @@ export const Plans = () => {
           maxWidth: '820px',
           margin: '0 auto 48px',
           padding: '28px 36px',
-          background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(30, 41, 59, 0.95))',
-          border: '1.5px solid rgba(56, 189, 248, 0.4)',
-          boxShadow: '0 10px 30px rgba(56, 189, 248, 0.15)'
+          background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(244, 63, 94, 0.1))',
+          border: '1.5px solid rgba(236, 72, 153, 0.4)',
+          boxShadow: '0 10px 30px rgba(236, 72, 153, 0.15)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
             <div>
@@ -140,7 +140,7 @@ export const Plans = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
-              background: 'rgba(10, 14, 23, 0.8)',
+              background: 'var(--bg-surface-elevated)',
               padding: '12px 20px',
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--border-glass)'

@@ -73,15 +73,15 @@ export const AddressMap = ({ initialAddress, onAddressChange }) => {
         attributionControl: false
       });
 
-      // Dark luxury map tiles
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      // Light map tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 19
       }).addTo(map);
 
       // Custom marker icon
       const customIcon = L.divIcon({
         className: 'custom-map-pin',
-        html: `<div style="background: #0ea5e9; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(14, 165, 233, 0.6); border: 2px solid white;"><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z'/><circle cx='12' cy='10' r='3'/></svg></div>`,
+        html: `<div style="background: #ec4899; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(236, 72, 153, 0.6); border: 2px solid white;"><svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z'/><circle cx='12' cy='10' r='3'/></svg></div>`,
         iconSize: [34, 34],
         iconAnchor: [17, 34]
       });
@@ -241,7 +241,7 @@ export const AddressMap = ({ initialAddress, onAddressChange }) => {
                   color: 'var(--text-main)',
                   transition: 'background 0.15s'
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(236, 72, 153, 0.1)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <MapPin size={16} color="var(--primary)" style={{ flexShrink: 0 }} />
@@ -271,7 +271,7 @@ export const AddressMap = ({ initialAddress, onAddressChange }) => {
           position: 'absolute',
           bottom: '10px',
           left: '10px',
-          background: 'rgba(17, 24, 39, 0.85)',
+          background: 'var(--bg-glass)',
           backdropFilter: 'blur(8px)',
           border: '1px solid var(--border-glass)',
           borderRadius: 'var(--radius-sm)',

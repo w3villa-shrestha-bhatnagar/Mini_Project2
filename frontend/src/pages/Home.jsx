@@ -34,8 +34,8 @@ export const Home = () => {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: 'rgba(56, 189, 248, 0.1)',
-            border: '1px solid rgba(56, 189, 248, 0.25)',
+            background: 'rgba(236, 72, 153, 0.1)',
+            border: '1px solid rgba(236, 72, 153, 0.25)',
             padding: '6px 16px',
             borderRadius: 'var(--radius-full)',
             fontSize: '0.85rem',
@@ -50,7 +50,7 @@ export const Home = () => {
           <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', lineHeight: 1.15, marginBottom: '24px' }}>
             Elevate Your Everyday with{' '}
             <span style={{
-              background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #ec4899 100%)',
+              background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #d946ef 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
@@ -78,7 +78,7 @@ export const Home = () => {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
-              background: 'rgba(255, 255, 255, 0.04)',
+              background: 'var(--bg-surface-elevated)',
               border: '1px solid var(--border-glass)',
               padding: '8px 18px',
               borderRadius: 'var(--radius-full)',
@@ -117,7 +117,7 @@ export const Home = () => {
       </section>
 
       {/* Membership Perks Showcase */}
-      <section style={{ padding: '60px 0', background: 'rgba(17, 24, 39, 0.5)', borderTop: '1px solid var(--border-glass)', borderBottom: '1px solid var(--border-glass)' }}>
+      <section style={{ padding: '60px 0', background: 'var(--bg-surface-elevated)', borderTop: '1px solid var(--border-glass)', borderBottom: '1px solid var(--border-glass)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 48px' }}>
             <span style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>

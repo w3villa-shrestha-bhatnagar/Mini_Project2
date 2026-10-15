@@ -5,7 +5,7 @@ import { Sparkles, Shield, Clock, CreditCard } from 'lucide-react';
 export const Footer = () => {
   return (
     <footer style={{
-      background: '#070a10',
+      background: 'var(--bg-surface-elevated)',
       borderTop: '1px solid var(--border-glass)',
       padding: '60px 0 30px',
       marginTop: '80px'

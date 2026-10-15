@@ -106,7 +106,7 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
           contact: user_info?.phone || user?.phone || ""
         },
         theme: {
-          color: isGold ? "#f59e0b" : "#0ea5e9"
+          color: isGold ? "#f59e0b" : "#ec4899"
         },
         modal: {
           ondismiss: function () {
@@ -240,8 +240,8 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
                       ? `1.5px solid ${isGold ? 'var(--accent-gold)' : 'var(--primary)'}`
                       : '1px solid var(--border-glass)',
                     background: selectedDuration === d.hours
-                      ? (isGold ? 'rgba(251, 191, 36, 0.12)' : 'rgba(56, 189, 248, 0.12)')
-                      : 'rgba(255, 255, 255, 0.03)',
+                      ? (isGold ? 'rgba(251, 191, 36, 0.12)' : 'rgba(236, 72, 153, 0.12)')
+                      : 'var(--bg-surface-elevated)',
                     color: selectedDuration === d.hours ? 'var(--text-main)' : 'var(--text-muted)',
                     fontSize: '0.82rem',
                     fontWeight: 600,

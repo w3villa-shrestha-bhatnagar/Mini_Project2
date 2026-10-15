@@ -92,7 +92,7 @@ export const Shop = () => {
         gap: '18px',
         marginBottom: '36px',
         padding: '18px 24px',
-        background: 'rgba(255, 255, 255, 0.02)',
+        background: 'var(--bg-surface-elevated)',
         border: '1px solid var(--border-glass)',
         borderRadius: 'var(--radius-lg)'
       }}>
@@ -103,13 +103,13 @@ export const Shop = () => {
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               style={{
-                background: selectedCategory === cat ? 'var(--primary)' : 'rgba(255, 255, 255, 0.04)',
-                color: selectedCategory === cat ? '#000' : 'var(--text-muted)',
+                background: selectedCategory === cat ? 'var(--primary)' : 'var(--bg-surface-elevated)',
+                color: selectedCategory === cat ? '#fff' : 'var(--text-muted)',
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 padding: '8px 16px',
                 borderRadius: 'var(--radius-full)',
-                border: 'none',
+                border: '1px solid var(--border-glass)',
                 cursor: 'pointer',
                 transition: 'all 0.2s'
               }}
