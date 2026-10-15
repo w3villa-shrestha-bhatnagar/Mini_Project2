@@ -34,13 +34,13 @@ export const Home = () => {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: 'rgba(56, 189, 248, 0.1)',
-            border: '1px solid rgba(56, 189, 248, 0.25)',
+            background: 'rgba(244, 114, 182, 0.12)',
+            border: '1px solid rgba(244, 114, 182, 0.3)',
             padding: '6px 16px',
             borderRadius: 'var(--radius-full)',
             fontSize: '0.85rem',
             fontWeight: 600,
-            color: 'var(--primary)',
+            color: '#BE185D',
             marginBottom: '24px'
           }}>
             <Crown size={15} color="var(--accent-gold)" />
@@ -50,7 +50,7 @@ export const Home = () => {
           <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', lineHeight: 1.15, marginBottom: '24px' }}>
             Elevate Your Everyday with{' '}
             <span style={{
-              background: 'linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #ec4899 100%)',
+              background: 'linear-gradient(135deg, #EC4899 0%, #F472B6 45%, #E11D48 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
@@ -67,7 +67,7 @@ export const Home = () => {
               Explore Collection <ArrowRight size={18} />
             </Link>
             <Link to="/plans" className="btn btn-secondary" style={{ padding: '14px 28px', fontSize: '1rem' }}>
-              <Sparkles size={18} color="var(--accent-gold)" /> View VIP Plans
+              <Sparkles size={18} color="var(--primary)" /> View VIP Plans
             </Link>
           </div>
 
@@ -78,11 +78,12 @@ export const Home = () => {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
-              background: 'rgba(255, 255, 255, 0.04)',
+              background: '#FFFFFF',
               border: '1px solid var(--border-glass)',
               padding: '8px 18px',
               borderRadius: 'var(--radius-full)',
-              fontSize: '0.88rem'
+              fontSize: '0.88rem',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.03)'
             }}>
               <span style={{ color: 'var(--text-muted)' }}>Logged in as <b>{user.name}</b>:</span>
               <span className={`badge ${user.subscription?.plan === 'gold' ? 'badge-gold' : user.subscription?.plan === 'silver' ? 'badge-silver' : 'badge-free'}`}>
@@ -117,10 +118,10 @@ export const Home = () => {
       </section>
 
       {/* Membership Perks Showcase */}
-      <section style={{ padding: '60px 0', background: 'rgba(17, 24, 39, 0.5)', borderTop: '1px solid var(--border-glass)', borderBottom: '1px solid var(--border-glass)' }}>
+      <section style={{ padding: '60px 0', background: 'rgba(255, 245, 248, 0.7)', borderTop: '1px solid var(--border-glass)', borderBottom: '1px solid var(--border-glass)' }}>
         <div className="container">
           <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 48px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--accent-gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               Why Join The Aura Club
             </span>
             <h2 style={{ fontSize: '2rem', marginTop: '6px' }}>Time-Limited Passes Built for Savvy Shoppers</h2>
@@ -130,8 +131,8 @@ export const Home = () => {
           </div>
 
           <div className="grid-3" style={{ gap: '24px' }}>
-            <div className="glass-panel" style={{ padding: '32px' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.1)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+            <div className="glass-panel" style={{ padding: '32px', background: '#FFFFFF' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(244, 114, 182, 0.15)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
                 <Zap size={24} />
               </div>
               <h3 style={{ fontSize: '1.25rem', marginBottom: '10px' }}>Immediate Savings</h3>
@@ -140,8 +141,8 @@ export const Home = () => {
               </p>
             </div>
 
-            <div className="glass-panel" style={{ padding: '32px' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(251, 191, 36, 0.1)', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+            <div className="glass-panel" style={{ padding: '32px', background: '#FFFFFF' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.12)', color: 'var(--accent-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
                 <Crown size={24} />
               </div>
               <h3 style={{ fontSize: '1.25rem', marginBottom: '10px' }}>Automated Cron Expiration</h3>
@@ -150,8 +151,8 @@ export const Home = () => {
               </p>
             </div>
 
-            <div className="glass-panel" style={{ padding: '32px' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(52, 211, 153, 0.1)', color: 'var(--accent-green)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+            <div className="glass-panel" style={{ padding: '32px', background: '#FFFFFF' }}>
+              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.12)', color: 'var(--accent-green)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
                 <Gift size={24} />
               </div>
               <h3 style={{ fontSize: '1.25rem', marginBottom: '10px' }}>Account Merge & Social Login</h3>

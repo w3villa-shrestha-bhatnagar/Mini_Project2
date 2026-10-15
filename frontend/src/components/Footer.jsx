@@ -5,7 +5,7 @@ import { Sparkles, Shield, Clock, CreditCard } from 'lucide-react';
 export const Footer = () => {
   return (
     <footer style={{
-      background: '#070a10',
+      background: '#F5EEEB',
       borderTop: '1px solid var(--border-glass)',
       padding: '60px 0 30px',
       marginTop: '80px'
@@ -21,7 +21,7 @@ export const Footer = () => {
           marginBottom: '40px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ padding: '10px', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '12px', color: 'var(--primary)' }}>
+            <div style={{ padding: '10px', background: 'rgba(244, 114, 182, 0.15)', borderRadius: '12px', color: 'var(--primary)' }}>
               <Clock size={22} />
             </div>
             <div>
@@ -31,7 +31,7 @@ export const Footer = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ padding: '10px', background: 'rgba(251, 191, 36, 0.1)', borderRadius: '12px', color: 'var(--accent-gold)' }}>
+            <div style={{ padding: '10px', background: 'rgba(245, 158, 11, 0.12)', borderRadius: '12px', color: 'var(--accent-gold)' }}>
               <Sparkles size={22} />
             </div>
             <div>
@@ -41,7 +41,7 @@ export const Footer = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ padding: '10px', background: 'rgba(52, 211, 153, 0.1)', borderRadius: '12px', color: 'var(--accent-green)' }}>
+            <div style={{ padding: '10px', background: 'rgba(16, 185, 129, 0.12)', borderRadius: '12px', color: 'var(--accent-green)' }}>
               <CreditCard size={22} />
             </div>
             <div>
@@ -51,7 +51,7 @@ export const Footer = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ padding: '10px', background: 'rgba(129, 140, 248, 0.1)', borderRadius: '12px', color: 'var(--accent-purple)' }}>
+            <div style={{ padding: '10px', background: 'rgba(168, 85, 247, 0.12)', borderRadius: '12px', color: 'var(--accent-purple)' }}>
               <Shield size={22} />
             </div>
             <div>

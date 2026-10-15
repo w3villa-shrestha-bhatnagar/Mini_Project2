@@ -21,7 +21,8 @@ def run_tests():
         print("✅ 1. Health check passed")
 
         # 2. Standard Signup
-        test_email = "testuser_alex@example.com"
+        import time
+        test_email = f"testuser_{int(time.time())}@example.com"
         signup_payload = {
             "name": "Alex Mercer",
             "email": test_email,

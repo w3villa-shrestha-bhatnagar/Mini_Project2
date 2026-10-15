@@ -213,6 +213,110 @@ class ResilientCollection:
         return count
 
 
+class LiveMongoCursor:
+    """Wrapper around AsyncIOMotorCursor that ensures string _id serialization."""
+    def __init__(self, cursor):
+        self._cursor = cursor
+
+    def sort(self, *args, **kwargs):
+        self._cursor.sort(*args, **kwargs)
+        return self
+
+    def skip(self, *args, **kwargs):
+        self._cursor.skip(*args, **kwargs)
+        return self
+
+    def limit(self, *args, **kwargs):
+        self._cursor.limit(*args, **kwargs)
+        return self
+
+    async def to_list(self, length: Optional[int] = None) -> List[Dict[str, Any]]:
+        docs = await self._cursor.to_list(length=length)
+        for doc in docs:
+            if doc and "_id" in doc:
+                doc["_id"] = str(doc["_id"])
+        return docs
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        doc = await self._cursor.__anext__()
+        if doc and "_id" in doc:
+            doc["_id"] = str(doc["_id"])
+        return doc
+
+
+class LiveMongoCollection:
+    """Wrapper around Motor collection ensuring UUID string IDs and flexible query handling."""
+    def __init__(self, collection):
+        self._col = collection
+        self.name = collection.name
+
+    def _normalize_filter(self, query: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+        if not query or not isinstance(query, dict):
+            return query or {}
+        from bson import ObjectId
+        new_q = {}
+        for k, v in query.items():
+            if k == "_id" and isinstance(v, str):
+                if ObjectId.is_valid(v):
+                    new_q["$or"] = [{"_id": v}, {"_id": ObjectId(v)}]
+                else:
+                    new_q["_id"] = v
+            elif isinstance(v, dict):
+                new_q[k] = self._normalize_filter(v)
+            elif isinstance(v, list) and k in ("$or", "$and"):
+                new_q[k] = [self._normalize_filter(item) if isinstance(item, dict) else item for item in v]
+            else:
+                new_q[k] = v
+        return new_q
+
+    async def find_one(self, filter: Optional[Dict[str, Any]] = None, *args, **kwargs) -> Optional[Dict[str, Any]]:
+        norm = self._normalize_filter(filter)
+        doc = await self._col.find_one(norm, *args, **kwargs)
+        if doc and "_id" in doc:
+            doc["_id"] = str(doc["_id"])
+        return doc
+
+    def find(self, filter: Optional[Dict[str, Any]] = None, *args, **kwargs) -> LiveMongoCursor:
+        norm = self._normalize_filter(filter)
+        cursor = self._col.find(norm, *args, **kwargs)
+        return LiveMongoCursor(cursor)
+
+    async def insert_one(self, document: Dict[str, Any], *args, **kwargs):
+        import uuid
+        doc = copy.deepcopy(document) if isinstance(document, dict) else document
+        if "_id" not in doc:
+            doc["_id"] = str(uuid.uuid4())
+        res = await self._col.insert_one(doc, *args, **kwargs)
+        # Ensure returned inserted_id is string compatible
+        class InsertResult:
+            def __init__(self, inserted_id):
+                self.inserted_id = str(inserted_id)
+        return InsertResult(doc["_id"])
+
+    async def update_one(self, filter: Dict[str, Any], update: Dict[str, Any], *args, **kwargs):
+        norm = self._normalize_filter(filter)
+        return await self._col.update_one(norm, update, *args, **kwargs)
+
+    async def update_many(self, filter: Dict[str, Any], update: Dict[str, Any], *args, **kwargs):
+        norm = self._normalize_filter(filter)
+        return await self._col.update_many(norm, update, *args, **kwargs)
+
+    async def delete_one(self, filter: Dict[str, Any], *args, **kwargs):
+        norm = self._normalize_filter(filter)
+        return await self._col.delete_one(norm, *args, **kwargs)
+
+    async def delete_many(self, filter: Dict[str, Any], *args, **kwargs):
+        norm = self._normalize_filter(filter)
+        return await self._col.delete_many(norm, *args, **kwargs)
+
+    async def count_documents(self, filter: Optional[Dict[str, Any]] = None, *args, **kwargs) -> int:
+        norm = self._normalize_filter(filter)
+        return await self._col.count_documents(norm, *args, **kwargs)
+
+
 class DatabaseManager:
     client: Optional[AsyncIOMotorClient] = None
     db: Any = None
@@ -227,22 +331,32 @@ class DatabaseManager:
 
     async def connect(self):
         try:
-            logger.info(f"Connecting to MongoDB at {settings.MONGODB_URI}...")
+            # Mask password in log output
+            masked_uri = settings.MONGODB_URI
+            if "@" in masked_uri:
+                prefix = masked_uri.split("@")[0].split("://")[0] + "://"
+                host_part = masked_uri.split("@")[1]
+                masked_uri = f"{prefix}****:****@{host_part}"
+            logger.info(f"Connecting to MongoDB at {masked_uri}...")
+
             client = AsyncIOMotorClient(
                 settings.MONGODB_URI,
-                serverSelectionTimeoutMS=2000
+                serverSelectionTimeoutMS=5000
             )
             # Test connection
             await client.admin.command('ping')
             self.client = client
             self.db = client[settings.MONGODB_DB_NAME]
-            self.users = self.db.users
-            self.plans = self.db.plans
-            self.orders = self.db.orders
-            self.products = self.db.products
-            self.tokens = self.db.tokens
+            self.users = LiveMongoCollection(self.db.users)
+            self.plans = LiveMongoCollection(self.db.plans)
+            self.orders = LiveMongoCollection(self.db.orders)
+            self.products = LiveMongoCollection(self.db.products)
+            self.tokens = LiveMongoCollection(self.db.tokens)
             self.is_live_mongo = True
             logger.info("Successfully connected to live MongoDB server!")
+
+            # Auto-migrate local JSON store if live database collections are empty
+            await self._auto_migrate_if_needed()
         except Exception as e:
             logger.warning(f"Live MongoDB not available ({e}). Initializing Resilient Data Store.")
             data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
@@ -254,6 +368,33 @@ class DatabaseManager:
             self.tokens = ResilientCollection("tokens", os.path.join(data_dir, "tokens.json"))
             self.is_live_mongo = False
             logger.info("Resilient Data Store initialized. Ready for local execution!")
+
+    async def _auto_migrate_if_needed(self):
+        """Automatically copies local JSON data into live MongoDB if MongoDB collections are empty."""
+        try:
+            data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+            if not os.path.exists(data_dir):
+                return
+            
+            mappings = [
+                ("users", self.users),
+                ("products", self.products),
+                ("orders", self.orders)
+            ]
+            
+            for name, col in mappings:
+                count = await col.count_documents({})
+                if count == 0:
+                    json_path = os.path.join(data_dir, f"{name}.json")
+                    if os.path.exists(json_path):
+                        with open(json_path, "r", encoding="utf-8") as f:
+                            docs = json.load(f)
+                        if isinstance(docs, list) and docs:
+                            for d in docs:
+                                await col.insert_one(copy.deepcopy(d))
+                            logger.info(f"✨ Successfully migrated {len(docs)} records from {name}.json to live MongoDB collection '{name}'!")
+        except Exception as e:
+            logger.error(f"Error during auto-migration to MongoDB: {e}")
 
     async def close(self):
         if self.client:
