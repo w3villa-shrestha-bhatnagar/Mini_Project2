@@ -1,9 +1,10 @@
 from typing import Optional
 from fastapi import APIRouter, Query
+from app.database import db_manager
 
 router = APIRouter(prefix="/products", tags=["E-Commerce Products"])
 
-SAMPLE_PRODUCTS = [
+DEFAULT_PRODUCTS = [
     {
         "id": "prod_1",
         "title": "Aura Chrono Luxe Watch",
@@ -71,13 +72,28 @@ async def get_products(
     category: Optional[str] = Query(None, description="Filter by category"),
     search: Optional[str] = Query(None, description="Search term")
 ):
-    results = SAMPLE_PRODUCTS
+    # Ensure database has products seeded
+    count = await db_manager.products.count_documents({})
+    if count == 0:
+        for p in DEFAULT_PRODUCTS:
+            await db_manager.products.insert_one(p)
+
+    query = {}
     if category and category != "All":
-        results = [p for p in results if p["category"].lower() == category.lower()]
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     if search:
-        s = search.lower()
-        results = [p for p in results if s in p["title"].lower() or s in p["description"].lower()]
+        query["$or"] = [
+            {"title": {"$regex": search, "$options": "i"}},
+            {"description": {"$regex": search, "$options": "i"}}
+        ]
+
+    cursor = db_manager.products.find(query)
+    results = await cursor.to_list(length=100)
     
+    # Remove internal _id for response
+    for r in results:
+        r.pop("_id", None)
+
     return {
         "status": "success",
         "products": results

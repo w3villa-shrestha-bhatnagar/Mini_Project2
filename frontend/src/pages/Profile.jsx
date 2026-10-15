@@ -146,7 +146,7 @@ export const Profile = () => {
           onClick={handleDownloadProfilePdf}
           disabled={downloadingPdf}
           className="btn btn-secondary"
-          style={{ borderColor: 'rgba(56, 189, 248, 0.4)', color: 'var(--primary)' }}
+          style={{ borderColor: 'rgba(244, 114, 182, 0.5)', color: 'var(--primary)' }}
           title="Download profile information in PDF format"
         >
           <Download size={18} />
@@ -158,7 +158,7 @@ export const Profile = () => {
         {/* Left Column: Avatar & Membership Box */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           {/* Avatar Card (Cloudinary 4.1) */}
-          <div className="glass-panel" style={{ padding: '32px', textAlign: 'center' }}>
+          <div className="glass-panel" style={{ padding: '32px', textAlign: 'center', background: '#FFFFFF' }}>
             <div style={{ position: 'relative', width: '130px', height: '130px', margin: '0 auto 20px' }}>
               <img
                 src={user?.avatar_thumb || user?.avatar || 'https://api.dicebear.com/7.x/initials/svg?seed=User'}
@@ -169,7 +169,7 @@ export const Profile = () => {
                   borderRadius: '50%',
                   objectFit: 'cover',
                   border: '3px solid var(--primary)',
-                  boxShadow: '0 0 25px rgba(56, 189, 248, 0.25)'
+                  boxShadow: '0 0 25px rgba(244, 114, 182, 0.3)'
                 }}
               />
               <label
@@ -179,7 +179,7 @@ export const Profile = () => {
                   bottom: '2px',
                   right: '2px',
                   background: 'var(--primary)',
-                  color: '#000',
+                  color: '#ffffff',
                   width: '36px',
                   height: '36px',
                   borderRadius: '50%',
@@ -187,7 +187,7 @@ export const Profile = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
+                  boxShadow: '0 4px 10px rgba(236, 72, 153, 0.4)',
                   transition: 'transform 0.2s'
                 }}
                 title="Upload Profile Picture to Cloudinary"
@@ -225,10 +225,11 @@ export const Profile = () => {
           {/* Membership Tier & Expiration Countdown Card */}
           <div className="glass-panel" style={{
             padding: '24px',
+            background: '#FFFFFF',
             border: sub.plan === 'gold'
-              ? '1.5px solid rgba(251, 191, 36, 0.4)'
+              ? '1.5px solid rgba(245, 158, 11, 0.45)'
               : sub.plan === 'silver'
-              ? '1px solid rgba(56, 189, 248, 0.4)'
+              ? '1.5px solid rgba(244, 114, 182, 0.45)'
               : '1px solid var(--border-glass)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
@@ -236,7 +237,7 @@ export const Profile = () => {
                 width: '36px',
                 height: '36px',
                 borderRadius: '8px',
-                background: sub.plan === 'gold' ? 'rgba(251, 191, 36, 0.15)' : 'rgba(56, 189, 248, 0.15)',
+                background: sub.plan === 'gold' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(244, 114, 182, 0.12)',
                 color: sub.plan === 'gold' ? 'var(--accent-gold)' : 'var(--primary)',
                 display: 'flex',
                 alignItems: 'center',
@@ -257,22 +258,24 @@ export const Profile = () => {
             {/* Live Countdown if active paid plan */}
             {isPaidActive ? (
               <div style={{
-                background: 'rgba(0, 0, 0, 0.4)',
+                background: '#FFF0F5',
+                border: '1px solid rgba(244, 114, 182, 0.25)',
                 padding: '14px',
                 borderRadius: 'var(--radius-md)',
                 marginBottom: '16px',
-                textAlign: 'center'
+                textAlign: 'center',
+                boxShadow: '0 2px 10px rgba(244, 114, 182, 0.08)'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: 'var(--primary)', marginBottom: '4px' }}>
                   <Clock size={14} />
                   <span style={{ fontSize: '0.78rem', fontWeight: 600, textTransform: 'uppercase' }}>Time Until Expiration</span>
                 </div>
-                <div style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: 'monospace', color: 'var(--text-main)' }}>
+                <div style={{ fontSize: '1.4rem', fontWeight: 800, fontFamily: 'monospace', color: '#BE185D' }}>
                   {String(remainingTime.hours).padStart(2, '0')}:
                   {String(remainingTime.minutes).padStart(2, '0')}:
                   {String(remainingTime.seconds).padStart(2, '0')}
                 </div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-subtle)', marginTop: '4px' }}>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '4px' }}>
                   Expires: {new Date(sub.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
               </div>
@@ -295,7 +298,7 @@ export const Profile = () => {
         </div>
 
         {/* Right Column: Profile Details & Address Form */}
-        <div className="glass-panel" style={{ padding: '36px' }}>
+        <div className="glass-panel" style={{ padding: '36px', background: '#FFFFFF' }}>
           <form onSubmit={handleSaveProfile}>
             <h2 style={{ fontSize: '1.4rem', marginBottom: '24px', paddingBottom: '12px', borderBottom: '1px solid var(--border-glass)' }}>
               Personal Information
@@ -332,7 +335,7 @@ export const Profile = () => {
                 className="form-input"
                 value={user?.email || ''}
                 disabled
-                style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                style={{ opacity: 0.8, cursor: 'not-allowed', background: '#FAF7F5' }}
               />
               <span style={{ fontSize: '0.78rem', color: 'var(--text-subtle)', marginTop: '4px', display: 'block' }}>
                 Email address is permanently linked with your verified account.

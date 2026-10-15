@@ -34,17 +34,8 @@ async def seed_initial_data():
             "is_verified": True,
             "avatar": f"https://api.dicebear.com/7.x/initials/svg?seed=Admin",
             "avatar_thumb": f"https://api.dicebear.com/7.x/initials/svg?seed=Admin",
-            "phone": "+1-800-AURA-MART",
-            "address": {
-                "formatted_address": "AuraMart Headquarters, Silicon Valley, CA, USA",
-                "street": "1 Infinite Loop",
-                "city": "Cupertino",
-                "state": "California",
-                "postal_code": "95014",
-                "country": "United States",
-                "lat": 37.33182,
-                "lng": -122.03118
-            },
+            "phone": "",
+            "address": {},
             "subscription": {
                 "plan": "gold",
                 "status": "active",
