@@ -62,3 +62,6 @@ async def upload_profile_image(file_bytes: bytes, filename: str) -> Tuple[str, s
         
     local_url = f"http://localhost:{settings.PORT}/static/avatars/{unique_filename}"
     return local_url, local_url
+
+
+'''hello'''

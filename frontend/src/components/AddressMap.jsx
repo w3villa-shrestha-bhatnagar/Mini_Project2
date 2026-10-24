@@ -73,8 +73,8 @@ export const AddressMap = ({ initialAddress, onAddressChange }) => {
         attributionControl: false
       });
 
-      // Dark luxury map tiles
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      // Light map tiles
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 19
       }).addTo(map);
 
