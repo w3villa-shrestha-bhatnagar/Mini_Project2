@@ -14,7 +14,7 @@ export const ProductCard = ({ product }) => {
   return (
     <div className="glass-panel card-hover" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       {/* Product Image */}
-      <div style={{ position: 'relative', height: '240px', overflow: 'hidden', background: 'var(--bg-surface-elevated)' }}>
+      <div style={{ position: 'relative', height: '240px', overflow: 'hidden', background: '#F9F4F6' }}>
         <img
           src={product.image}
           alt={product.title}
@@ -31,14 +31,16 @@ export const ProductCard = ({ product }) => {
           position: 'absolute',
           top: '12px',
           left: '12px',
-          background: 'rgba(244, 63, 94, 0.1)',
+          background: 'rgba(255, 255, 255, 0.9)',
           backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
           border: '1px solid var(--border-glass)',
           padding: '4px 10px',
           borderRadius: 'var(--radius-full)',
           fontSize: '0.72rem',
           fontWeight: 700,
-          color: 'var(--text-muted)'
+          color: 'var(--text-muted)',
+          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)'
         }}>
           {product.category}
         </div>
@@ -48,15 +50,16 @@ export const ProductCard = ({ product }) => {
             position: 'absolute',
             top: '12px',
             right: '12px',
-            background: plan === 'gold' ? 'var(--accent-gold)' : 'var(--primary)',
-            color: '#000',
+            background: plan === 'gold' ? 'linear-gradient(135deg, #F59E0B, #D97706)' : 'linear-gradient(135deg, #F472B6, #FB7185)',
+            color: '#ffffff',
             padding: '4px 10px',
             borderRadius: 'var(--radius-full)',
             fontSize: '0.72rem',
             fontWeight: 800,
             display: 'flex',
             alignItems: 'center',
-            gap: '4px'
+            gap: '4px',
+            boxShadow: '0 2px 8px rgba(244, 114, 182, 0.35)'
           }}>
             <Sparkles size={11} /> {discountPercent}% OFF
           </div>

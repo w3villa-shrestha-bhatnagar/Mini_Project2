@@ -37,7 +37,7 @@ export const VerifyEmail = () => {
 
   return (
     <div className="container" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
-      <div className="glass-panel" style={{ maxWidth: '480px', width: '100%', padding: '48px 36px', textAlign: 'center' }}>
+      <div className="glass-panel" style={{ maxWidth: '480px', width: '100%', padding: '48px 36px', textAlign: 'center', background: '#FFFFFF', boxShadow: '0 20px 40px -15px rgba(220, 140, 165, 0.12)' }}>
         {status === 'verifying' && (
           <div>
             <Loader2 size={48} color="var(--primary)" style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 20px' }} />
@@ -54,7 +54,7 @@ export const VerifyEmail = () => {
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              background: 'rgba(52, 211, 153, 0.15)',
+              background: 'rgba(16, 185, 129, 0.12)',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -79,14 +79,14 @@ export const VerifyEmail = () => {
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              background: 'rgba(244, 63, 94, 0.15)',
+              background: 'rgba(244, 63, 94, 0.1)',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: '20px',
-              border: '2px solid #fb7185'
+              border: '2px solid #E11D48'
             }}>
-              <AlertCircle size={36} color="#fb7185" />
+              <AlertCircle size={36} color="#E11D48" />
             </div>
             <h2 style={{ fontSize: '1.8rem', marginBottom: '12px' }}>Verification Failed</h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '32px', lineHeight: 1.6 }}>

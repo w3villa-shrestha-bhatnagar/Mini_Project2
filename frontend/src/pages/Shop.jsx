@@ -46,8 +46,8 @@ export const Shop = () => {
           <div style={{
             marginTop: '20px',
             padding: '12px 20px',
-            background: 'rgba(52, 211, 153, 0.12)',
-            border: '1px solid rgba(52, 211, 153, 0.3)',
+            background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.25)',
             borderRadius: 'var(--radius-md)',
             display: 'flex',
             alignItems: 'center',
@@ -64,19 +64,19 @@ export const Shop = () => {
           <div style={{
             marginTop: '20px',
             padding: '12px 20px',
-            background: 'rgba(251, 191, 36, 0.1)',
-            border: '1px solid rgba(251, 191, 36, 0.25)',
+            background: 'rgba(244, 114, 182, 0.12)',
+            border: '1px solid rgba(244, 114, 182, 0.3)',
             borderRadius: 'var(--radius-md)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: '10px',
-            color: 'var(--accent-gold)',
+            color: '#BE185D',
             fontSize: '0.92rem'
           }}>
             <span>Want up to 25% off these prices? Get a time-limited VIP Pass.</span>
-            <Link to="/plans" className="btn btn-gold btn-sm">
+            <Link to="/plans" className="btn btn-primary btn-sm">
               View VIP Plans
             </Link>
           </div>
@@ -92,9 +92,10 @@ export const Shop = () => {
         gap: '18px',
         marginBottom: '36px',
         padding: '18px 24px',
-        background: 'var(--bg-surface-elevated)',
+        background: '#FFFFFF',
         border: '1px solid var(--border-glass)',
-        borderRadius: 'var(--radius-lg)'
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: '0 4px 15px rgba(220, 150, 175, 0.05)'
       }}>
         {/* Category Pills */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -103,15 +104,16 @@ export const Shop = () => {
               key={cat}
               onClick={() => setSelectedCategory(cat)}
               style={{
-                background: selectedCategory === cat ? 'var(--primary)' : 'var(--bg-surface-elevated)',
-                color: selectedCategory === cat ? '#fff' : 'var(--text-muted)',
+                background: selectedCategory === cat ? 'linear-gradient(135deg, #F472B6, #FB7185)' : '#FFFFFF',
+                color: selectedCategory === cat ? '#FFFFFF' : 'var(--text-muted)',
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 padding: '8px 16px',
                 borderRadius: 'var(--radius-full)',
-                border: '1px solid var(--border-glass)',
+                border: selectedCategory === cat ? 'none' : '1px solid var(--border-glass)',
                 cursor: 'pointer',
-                transition: 'all 0.2s'
+                transition: 'all 0.2s',
+                boxShadow: selectedCategory === cat ? '0 4px 12px rgba(244, 114, 182, 0.3)' : 'none'
               }}
             >
               {cat}

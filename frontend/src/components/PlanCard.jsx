@@ -150,12 +150,17 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        background: '#FFFFFF',
         border: isGold
-          ? '1.5px solid rgba(251, 191, 36, 0.4)'
+          ? '1.5px solid rgba(245, 158, 11, 0.45)'
           : isSilver
-          ? '1px solid rgba(56, 189, 248, 0.3)'
+          ? '1.5px solid rgba(244, 114, 182, 0.45)'
           : '1px solid var(--border-glass)',
-        boxShadow: isGold ? '0 10px 30px rgba(251, 191, 36, 0.1)' : undefined
+        boxShadow: isGold
+          ? '0 10px 30px rgba(245, 158, 11, 0.12)'
+          : isSilver
+          ? '0 10px 30px rgba(244, 114, 182, 0.12)'
+          : undefined
       }}
     >
       {/* Popular/Current Tag */}
@@ -170,7 +175,7 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
           fontWeight: 800,
           padding: '4px 12px',
           borderRadius: 'var(--radius-full)',
-          boxShadow: '0 4px 10px rgba(16, 185, 129, 0.4)'
+          boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
         }}>
           ACTIVE PLAN
         </div>
@@ -180,12 +185,13 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
           position: 'absolute',
           top: '-12px',
           right: '24px',
-          background: 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+          background: 'linear-gradient(135deg, #F472B6, #FB7185)',
           color: '#ffffff',
           fontSize: '0.72rem',
           fontWeight: 800,
           padding: '4px 12px',
-          borderRadius: 'var(--radius-full)'
+          borderRadius: 'var(--radius-full)',
+          boxShadow: '0 4px 10px rgba(244, 114, 182, 0.35)'
         }}>
           MOST POPULAR
         </div>
@@ -199,10 +205,10 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
             height: '40px',
             borderRadius: '10px',
             background: isGold
-              ? 'rgba(251, 191, 36, 0.15)'
+              ? 'rgba(245, 158, 11, 0.12)'
               : isSilver
-              ? 'rgba(56, 189, 248, 0.15)'
-              : 'rgba(255, 255, 255, 0.05)',
+              ? 'rgba(244, 114, 182, 0.12)'
+              : 'rgba(0, 0, 0, 0.04)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -240,13 +246,14 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
                       ? `1.5px solid ${isGold ? 'var(--accent-gold)' : 'var(--primary)'}`
                       : '1px solid var(--border-glass)',
                     background: selectedDuration === d.hours
-                      ? (isGold ? 'rgba(251, 191, 36, 0.12)' : 'rgba(236, 72, 153, 0.12)')
-                      : 'var(--bg-surface-elevated)',
+                      ? (isGold ? 'rgba(245, 158, 11, 0.12)' : 'rgba(244, 114, 182, 0.14)')
+                      : '#FFFFFF',
                     color: selectedDuration === d.hours ? 'var(--text-main)' : 'var(--text-muted)',
                     fontSize: '0.82rem',
                     fontWeight: 600,
                     cursor: 'pointer',
-                    transition: 'all 0.2s'
+                    transition: 'all 0.2s',
+                    boxShadow: selectedDuration === d.hours ? '0 2px 6px rgba(244, 114, 182, 0.15)' : undefined
                   }}
                 >
                   {d.label}

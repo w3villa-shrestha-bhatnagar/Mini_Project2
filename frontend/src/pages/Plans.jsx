@@ -91,16 +91,16 @@ export const Plans = () => {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          background: 'rgba(251, 191, 36, 0.1)',
-          border: '1px solid rgba(251, 191, 36, 0.3)',
+          background: 'rgba(244, 114, 182, 0.12)',
+          border: '1px solid rgba(244, 114, 182, 0.3)',
           padding: '6px 16px',
           borderRadius: 'var(--radius-full)',
           fontSize: '0.85rem',
           fontWeight: 700,
-          color: 'var(--accent-gold)',
+          color: '#BE185D',
           marginBottom: '20px'
         }}>
-          <Crown size={15} /> Time-Limited VIP Memberships
+          <Crown size={15} color="var(--accent-gold)" /> Time-Limited VIP Memberships
         </div>
 
         <h1 style={{ fontSize: '2.8rem', marginBottom: '14px', lineHeight: 1.2 }}>
@@ -117,9 +117,9 @@ export const Plans = () => {
           maxWidth: '820px',
           margin: '0 auto 48px',
           padding: '28px 36px',
-          background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(244, 63, 94, 0.1))',
-          border: '1.5px solid rgba(236, 72, 153, 0.4)',
-          boxShadow: '0 10px 30px rgba(236, 72, 153, 0.15)'
+          background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF5F8 100%)',
+          border: '1.5px solid rgba(244, 114, 182, 0.45)',
+          boxShadow: '0 10px 30px rgba(244, 114, 182, 0.12)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
             <div>
@@ -140,19 +140,20 @@ export const Plans = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '12px',
-              background: 'var(--bg-surface-elevated)',
+              background: '#FFF0F5',
               padding: '12px 20px',
               borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--border-glass)'
+              border: '1px solid rgba(244, 114, 182, 0.3)',
+              boxShadow: '0 2px 10px rgba(244, 114, 182, 0.1)'
             }}>
               <Clock size={24} color="var(--primary)" />
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 800, fontFamily: 'monospace', color: 'var(--primary)' }}>
+                <div style={{ fontSize: '1.5rem', fontWeight: 800, fontFamily: 'monospace', color: '#BE185D' }}>
                   {String(remainingTime.hours).padStart(2, '0')}:
                   {String(remainingTime.minutes).padStart(2, '0')}:
                   {String(remainingTime.seconds).padStart(2, '0')}
                 </div>
-                <span style={{ fontSize: '0.7rem', color: 'var(--text-subtle)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                   Time Remaining (Hours : Mins : Secs)
                 </span>
               </div>
@@ -181,9 +182,9 @@ export const Plans = () => {
       )}
 
       {/* Cron Explanation Section */}
-      <div className="glass-panel" style={{ maxWidth: '820px', margin: '60px auto 0', padding: '24px 30px' }}>
+      <div className="glass-panel" style={{ maxWidth: '820px', margin: '60px auto 0', padding: '24px 30px', background: '#FFFFFF' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-          <div style={{ padding: '10px', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '10px', color: 'var(--primary)', flexShrink: 0 }}>
+          <div style={{ padding: '10px', background: 'rgba(244, 114, 182, 0.14)', borderRadius: '10px', color: 'var(--primary)', flexShrink: 0 }}>
             <Clock size={22} />
           </div>
           <div>

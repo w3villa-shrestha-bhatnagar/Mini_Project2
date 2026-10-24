@@ -34,12 +34,51 @@ export const Signup = () => {
     setLoading(true);
 
     try {
-      // Social login supports simulated tokens or real client tokens
-      const mockSocialToken = `mock_${provider}___${email || (provider + "_user@example.com")}___${name || (provider.toUpperCase() + " Member")}`;
+      const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+      // 1. If Google and real Client ID is available, try Google OAuth2 popup
+      if (provider === 'google' && window.google?.accounts?.oauth2 && googleClientId && !googleClientId.startsWith('placeholder_')) {
+        try {
+          const tokenResponse = await new Promise((resolve, reject) => {
+            const client = window.google.accounts.oauth2.initTokenClient({
+              client_id: googleClientId,
+              scope: 'email profile openid',
+              callback: (res) => {
+                if (res.error) reject(new Error(res.error_description || res.error));
+                else if (res.access_token) resolve(res);
+                else reject(new Error('No token returned from Google'));
+              },
+              error_callback: (err) => reject(new Error(err.message || 'Google Sign-In failed'))
+            });
+            client.requestAccessToken();
+          });
+
+          if (tokenResponse?.access_token) {
+            const data = await socialLogin('google', { token: tokenResponse.access_token });
+            if (data.is_merged) {
+              alert(`Account merged! Linked with your existing account: ${data.user.email}`);
+            }
+            navigate('/profile');
+            return;
+          }
+        } catch (gErr) {
+          console.warn("Google popup was cancelled or failed, falling back to direct input:", gErr);
+        }
+      }
+
+      // 2. Direct Social Login with Real Email (prevents hardcoded dummy data)
+      const inputEmail = email.trim() || window.prompt(`Enter your ${provider.toUpperCase()} account email address:`);
+      if (!inputEmail) {
+        setLoading(false);
+        return;
+      }
+
+      const inputName = name.trim() || inputEmail.split('@')[0];
+      const socialToken = `mock_${provider}___${inputEmail}___${inputName}`;
       const data = await socialLogin(provider, {
-        token: mockSocialToken,
-        email: email || `${provider}_user@example.com`,
-        name: name || `${provider.toUpperCase()} Member`
+        token: socialToken,
+        email: inputEmail,
+        name: inputName
       });
 
       if (data.is_merged) {
@@ -55,19 +94,19 @@ export const Signup = () => {
 
   return (
     <div className="container" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
-      <div className="glass-panel" style={{ maxWidth: '480px', width: '100%', padding: '40px 32px' }}>
+      <div className="glass-panel" style={{ maxWidth: '480px', width: '100%', padding: '40px 32px', background: '#FFFFFF', boxShadow: '0 20px 40px -15px rgba(220, 140, 165, 0.12)' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
             width: '46px',
             height: '46px',
             borderRadius: '12px',
-            background: 'linear-gradient(135deg, #ec4899, #f43f5e)',
+            background: 'linear-gradient(135deg, #F472B6, #FB7185)',
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: '16px',
-            boxShadow: '0 0 20px rgba(236, 72, 153, 0.4)'
+            boxShadow: '0 4px 16px rgba(244, 114, 182, 0.35)'
           }}>
             <Sparkles size={24} color="#fff" />
           </div>
@@ -82,9 +121,9 @@ export const Signup = () => {
           <div style={{
             padding: '12px 16px',
             borderRadius: 'var(--radius-md)',
-            background: 'rgba(244, 63, 94, 0.12)',
-            border: '1px solid rgba(244, 63, 94, 0.3)',
-            color: '#fb7185',
+            background: 'rgba(244, 63, 94, 0.08)',
+            border: '1px solid rgba(244, 63, 94, 0.25)',
+            color: '#E11D48',
             fontSize: '0.88rem',
             display: 'flex',
             alignItems: 'center',
@@ -101,8 +140,8 @@ export const Signup = () => {
           <div style={{
             padding: '24px',
             borderRadius: 'var(--radius-lg)',
-            background: 'rgba(52, 211, 153, 0.1)',
-            border: '1px solid rgba(52, 211, 153, 0.3)',
+            background: 'rgba(16, 185, 129, 0.08)',
+            border: '1px solid rgba(16, 185, 129, 0.25)',
             color: 'var(--text-main)',
             textAlign: 'center'
           }}>
@@ -115,8 +154,8 @@ export const Signup = () => {
             {/* Development shortcut button */}
             {successInfo.dev_verification_url && (
               <div style={{
-                background: 'var(--bg-surface-elevated)',
-                border: '1px dashed var(--border-glass)',
+                background: '#FFF5F8',
+                border: '1px dashed rgba(244, 114, 182, 0.5)',
                 padding: '14px',
                 borderRadius: 'var(--radius-md)',
                 marginTop: '16px'
@@ -149,7 +188,7 @@ export const Signup = () => {
                 onClick={() => handleSocialSignup('google')}
                 disabled={loading}
                 className="btn btn-secondary"
-                style={{ width: '100%', gap: '12px', background: 'var(--bg-surface-elevated)' }}
+                style={{ width: '100%', gap: '12px', background: '#FFFFFF', boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)' }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -165,7 +204,7 @@ export const Signup = () => {
                 onClick={() => handleSocialSignup('facebook')}
                 disabled={loading}
                 className="btn btn-secondary"
-                style={{ width: '100%', gap: '12px', background: 'var(--bg-surface-elevated)' }}
+                style={{ width: '100%', gap: '12px', background: '#FFFFFF', boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)' }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
