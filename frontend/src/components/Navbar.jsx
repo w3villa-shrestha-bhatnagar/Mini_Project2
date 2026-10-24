@@ -47,12 +47,14 @@ export const Navbar = () => {
       left: 0,
       right: 0,
       height: '72px',
-      background: 'rgba(255, 255, 255, 0.85)',
+      background: 'rgba(250, 247, 245, 0.88)',
       backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
       borderBottom: '1px solid var(--border-glass)',
       zIndex: 100,
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
+      boxShadow: '0 2px 10px rgba(220, 150, 175, 0.05)'
     }}>
       <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
         {/* Brand */}
@@ -61,11 +63,11 @@ export const Navbar = () => {
             width: '38px',
             height: '38px',
             borderRadius: '10px',
-            background: 'linear-gradient(135deg, var(--primary), var(--accent-purple))',
+            background: 'linear-gradient(135deg, #F472B6, #FB7185)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)'
+            boxShadow: '0 4px 14px rgba(244, 114, 182, 0.35)'
           }}>
             <Sparkles size={20} color="#fff" />
           </div>
@@ -114,11 +116,11 @@ export const Navbar = () => {
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              color: isActive('/plans') ? 'var(--accent-gold)' : 'var(--text-muted)',
+              color: isActive('/plans') ? 'var(--primary)' : 'var(--text-muted)',
               transition: 'color 0.2s'
             }}
           >
-            <Crown size={15} color="var(--accent-gold)" />
+            <Crown size={15} color={isActive('/plans') ? 'var(--primary)' : 'var(--accent-gold)'} />
             VIP Plans
           </Link>
         </div>
@@ -130,7 +132,7 @@ export const Navbar = () => {
             onClick={() => setIsCartOpen(true)}
             style={{
               position: 'relative',
-              background: 'rgba(244, 63, 94, 0.08)',
+              background: '#FFFFFF',
               border: '1px solid var(--border-glass)',
               borderRadius: 'var(--radius-md)',
               padding: '9px 12px',
@@ -138,7 +140,8 @@ export const Navbar = () => {
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '8px',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)'
             }}
             title="View Shopping Cart"
           >
@@ -149,7 +152,7 @@ export const Navbar = () => {
                 top: '-6px',
                 right: '-6px',
                 background: 'var(--primary)',
-                color: '#000',
+                color: '#fff',
                 fontSize: '0.72rem',
                 fontWeight: 700,
                 width: '18px',
@@ -157,7 +160,8 @@ export const Navbar = () => {
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                boxShadow: '0 2px 6px rgba(236, 72, 153, 0.4)'
               }}>
                 {totalCount}
               </span>
@@ -171,7 +175,7 @@ export const Navbar = () => {
                 <Link
                   to="/admin"
                   className="btn btn-secondary btn-sm"
-                  style={{ borderColor: 'rgba(236, 72, 153, 0.4)', color: 'var(--primary)' }}
+                  style={{ borderColor: 'rgba(244, 114, 182, 0.5)', color: 'var(--primary)' }}
                   title="Go to Admin Panel"
                 >
                   <ShieldCheck size={16} /> Admin
@@ -193,8 +197,9 @@ export const Navbar = () => {
                   textDecoration: 'none',
                   padding: '4px 8px',
                   borderRadius: 'var(--radius-md)',
-                  background: 'rgba(244, 63, 94, 0.06)',
-                  border: '1px solid var(--border-glass)'
+                  background: '#FFFFFF',
+                  border: '1px solid var(--border-glass)',
+                  boxShadow: '0 2px 6px rgba(0, 0, 0, 0.03)'
                 }}
               >
                 <img

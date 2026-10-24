@@ -244,7 +244,7 @@ export const Admin = () => {
           gap: '20px',
           marginBottom: '36px'
         }}>
-          <div className="glass-panel" style={{ padding: '20px' }}>
+          <div className="glass-panel" style={{ padding: '20px', background: '#FFFFFF' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--primary)', marginBottom: '10px' }}>
               <Users size={22} />
               <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>Registered</span>
@@ -253,7 +253,7 @@ export const Admin = () => {
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Total Users</div>
           </div>
 
-          <div className="glass-panel" style={{ padding: '20px' }}>
+          <div className="glass-panel" style={{ padding: '20px', background: '#FFFFFF' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--accent-green)', marginBottom: '10px' }}>
               <UserCheck size={22} />
               <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>Active</span>
@@ -262,7 +262,7 @@ export const Admin = () => {
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Verified Accounts</div>
           </div>
 
-          <div className="glass-panel" style={{ padding: '20px' }}>
+          <div className="glass-panel" style={{ padding: '20px', background: '#FFFFFF' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--accent-gold)', marginBottom: '10px' }}>
               <Crown size={22} />
               <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>Subscribers</span>
@@ -271,8 +271,8 @@ export const Admin = () => {
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Active VIP Passes</div>
           </div>
 
-          <div className="glass-panel" style={{ padding: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fb7185', marginBottom: '10px' }}>
+          <div className="glass-panel" style={{ padding: '20px', background: '#FFFFFF' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#E11D48', marginBottom: '10px' }}>
               <Clock size={22} />
               <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>Expired</span>
             </div>
@@ -280,7 +280,7 @@ export const Admin = () => {
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Cron Expired Plans</div>
           </div>
 
-          <div className="glass-panel" style={{ padding: '20px' }}>
+          <div className="glass-panel" style={{ padding: '20px', background: '#FFFFFF' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--primary)', marginBottom: '10px' }}>
               <DollarSign size={22} />
               <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>Razorpay</span>
@@ -292,7 +292,7 @@ export const Admin = () => {
       )}
 
       {/* User Listing Section (6.2 - 6.5) */}
-      <div className="glass-panel" style={{ padding: '28px' }}>
+      <div className="glass-panel" style={{ padding: '28px', background: '#FFFFFF', boxShadow: '0 4px 20px rgba(220, 150, 175, 0.08)' }}>
         {/* Search and Filters Bar */}
         <div style={{
           display: 'flex',
@@ -569,15 +569,16 @@ export const Admin = () => {
                 key={p}
                 onClick={() => updateQuery({ page: p.toString() })}
                 style={{
-                  background: pagination.page === p ? 'var(--primary)' : 'var(--bg-surface-elevated)',
-                  color: pagination.page === p ? '#fff' : 'var(--text-main)',
-                  border: '1px solid var(--border-glass)',
+                  background: pagination.page === p ? 'linear-gradient(135deg, #F472B6, #FB7185)' : '#FFFFFF',
+                  color: pagination.page === p ? '#FFFFFF' : 'var(--text-main)',
+                  border: pagination.page === p ? 'none' : '1px solid var(--border-glass)',
                   borderRadius: 'var(--radius-sm)',
                   width: '32px',
                   height: '32px',
                   fontSize: '0.82rem',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  boxShadow: pagination.page === p ? '0 2px 8px rgba(244, 114, 182, 0.35)' : undefined
                 }}
               >
                 {p}

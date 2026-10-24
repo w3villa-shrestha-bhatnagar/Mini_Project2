@@ -1,24 +1,30 @@
 :root {
-  --bg-main: #fdf2f8;
-  --bg-surface: #ffffff;
-  --bg-surface-elevated: #fff7fa;
+  /* Modern Off-White & Light Pink Design Tokens */
+  --bg-main: #FAF7F5;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #FFF9FA;
   --bg-glass: rgba(255, 255, 255, 0.85);
-  --border-glass: rgba(244, 63, 94, 0.15);
-  --border-focus: rgba(244, 63, 94, 0.4);
+  --border-glass: rgba(238, 206, 219, 0.65);
+  --border-focus: rgba(244, 114, 182, 0.55);
 
-  --primary: #ec4899;
-  --primary-hover: #db2777;
+  /* Primary Light Pink Palette */
+  --primary: #EC4899;
+  --primary-hover: #DB2777;
+  --primary-light: #FCE7F3;
   --primary-glow: rgba(236, 72, 153, 0.2);
 
-  --accent-purple: #d946ef;
-  --accent-pink: #f43f5e;
-  --accent-gold: #f59e0b;
-  --accent-silver: #e5e7eb;
-  --accent-green: #22c55e;
+  /* Secondary & Accents */
+  --accent-purple: #A855F7;
+  --accent-pink: #F472B6;
+  --accent-rose: #FB7185;
+  --accent-gold: #D97706;
+  --accent-silver: #64748B;
+  --accent-green: #059669;
 
-  --text-main: #1f2937;
-  --text-muted: #6b7280;
-  --text-subtle: #9ca3af;
+  /* Typography Colors - High readability against off-white */
+  --text-main: #231625;
+  --text-muted: #6C596B;
+  --text-subtle: #988496;
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -29,8 +35,8 @@
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Plus Jakarta Sans', sans-serif;
 
-  --shadow-card: 0 10px 30px -10px rgba(244, 63, 94, 0.12);
-  --shadow-glow: 0 0 25px rgba(236, 72, 153, 0.15);
+  --shadow-card: 0 10px 30px -8px rgba(210, 120, 150, 0.1), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-glow: 0 0 25px rgba(244, 114, 182, 0.22);
   --shadow-gold: 0 0 25px rgba(245, 158, 11, 0.2);
 }
 
@@ -54,6 +60,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--text-main);
 }
 
 /* Custom Scrollbar */
@@ -65,11 +72,11 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: #fce7f3;
+  background: #E8CFD8;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #fbcfe8;
+  background: #D8B4C2;
 }
 
 /* Layout Utilities */
@@ -90,14 +97,14 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 24px;
 }
 
-/* Background Ambient Orbs */
+/* Background Ambient Orbs (Soft Rose & Champagne Off-white) */
 .ambient-glow-1 {
   position: fixed;
   top: -150px;
   left: -150px;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, rgba(253, 242, 248, 0) 70%);
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.16) 0%, rgba(250, 247, 245, 0) 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -106,9 +113,9 @@ h1, h2, h3, h4, h5, h6 {
   position: fixed;
   top: 30%;
   right: -200px;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(217, 70, 239, 0.06) 0%, rgba(253, 242, 248, 0) 70%);
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, rgba(251, 113, 133, 0.12) 0%, rgba(250, 247, 245, 0) 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -128,8 +135,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .card-hover:hover {
   transform: translateY(-4px);
-  border-color: rgba(56, 189, 248, 0.3);
-  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6), var(--shadow-glow);
+  border-color: rgba(244, 114, 182, 0.45);
+  box-shadow: 0 16px 36px -10px rgba(220, 110, 145, 0.16), var(--shadow-glow);
 }
 
 /* Buttons */
@@ -154,45 +161,51 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(0.98);
 }
 
+/* Modern Light Pink Primary Button */
 .btn-primary {
-  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  background: linear-gradient(135deg, #F472B6 0%, #FB7185 100%);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+  box-shadow: 0 4px 14px rgba(244, 114, 182, 0.35);
+  border: none;
 }
 .btn-primary:hover {
-  background: linear-gradient(135deg, #38bdf8, #818cf8);
-  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.5);
+  background: linear-gradient(135deg, #EC4899 0%, #F43F5E 100%);
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.42);
+  color: #ffffff;
 }
 
+/* Modern Off-white / Clean Secondary Button */
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.06);
+  background: #FFFFFF;
   color: var(--text-main);
   border: 1px solid var(--border-glass);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: #FFF5F7;
+  border-color: rgba(244, 114, 182, 0.45);
+  color: var(--primary);
 }
 
 .btn-gold {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #0f172a;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: #ffffff;
   font-weight: 700;
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
 }
 .btn-gold:hover {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
   box-shadow: var(--shadow-gold);
 }
 
 .btn-danger {
-  background: rgba(244, 63, 94, 0.15);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.3);
+  background: rgba(244, 63, 94, 0.08);
+  color: #E11D48;
+  border: 1px solid rgba(244, 63, 94, 0.25);
 }
 .btn-danger:hover {
-  background: rgba(244, 63, 94, 0.25);
-  border-color: #fb7185;
+  background: rgba(244, 63, 94, 0.16);
+  border-color: #E11D48;
 }
 
 .btn-sm {
@@ -215,33 +228,33 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .badge-gold {
-  background: rgba(251, 191, 36, 0.15);
-  color: #fbbf24;
-  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: rgba(245, 158, 11, 0.12);
+  color: #B45309;
+  border: 1px solid rgba(245, 158, 11, 0.28);
 }
 
 .badge-silver {
-  background: rgba(203, 213, 225, 0.15);
-  color: #cbd5e1;
-  border: 1px solid rgba(203, 213, 225, 0.3);
+  background: rgba(244, 114, 182, 0.12);
+  color: #BE185D;
+  border: 1px solid rgba(244, 114, 182, 0.3);
 }
 
 .badge-free {
-  background: rgba(148, 163, 184, 0.1);
-  color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(148, 163, 184, 0.12);
+  color: #64748B;
+  border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
 .badge-active {
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(52, 211, 153, 0.3);
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .badge-expired {
-  background: rgba(244, 63, 94, 0.15);
-  color: #fb7185;
-  border: 1px solid rgba(244, 63, 94, 0.3);
+  background: rgba(244, 63, 94, 0.1);
+  color: #BE123C;
+  border: 1px solid rgba(244, 63, 94, 0.25);
 }
 
 /* Form Controls */
@@ -261,7 +274,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-input {
   width: 100%;
   padding: 12px 16px;
-  background: var(--bg-surface);
+  background: #FFFFFF;
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
   color: var(--text-main);
@@ -269,6 +282,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.95rem;
   transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .form-input:focus {
@@ -284,8 +298,9 @@ h1, h2, h3, h4, h5, h6 {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(31, 41, 55, 0.5);
+  background: rgba(35, 20, 30, 0.45);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,7 +315,7 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 540px;
   width: 100%;
   padding: 32px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(180, 80, 110, 0.18);
   position: relative;
   max-height: 90vh;
   overflow-y: auto;
@@ -325,26 +340,26 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--radius-md);
   font-size: 0.92rem;
   font-weight: 500;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px rgba(190, 80, 120, 0.12);
   animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .toast-success {
-  background: #ecfdf5;
-  border: 1px solid #10b981;
-  color: #065f46;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
 }
 
 .toast-error {
-  background: #fef2f2;
-  border: 1px solid #ef4444;
-  color: #991b1b;
+  background: #FFF1F2;
+  border: 1px solid #FECDD3;
+  color: #9F1239;
 }
 
 .toast-info {
-  background: #fafafa;
-  border: 1px solid #3b82f6;
-  color: #1e40af;
+  background: #FDF2F8;
+  border: 1px solid #FBCFE8;
+  color: #9D174D;
 }
 
 @keyframes slideIn {
