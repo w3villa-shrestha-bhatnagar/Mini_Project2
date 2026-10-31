@@ -158,8 +158,7 @@ export const Login = () => {
       const data = await resendVerification(email);
       setResendStatus({
         type: 'success',
-        message: data.message,
-        dev_url: data.dev_verification_url
+        message: data.message
       });
     } catch (err) {
       setResendStatus({
@@ -214,7 +213,7 @@ export const Login = () => {
               <span>Email Not Verified</span>
             </div>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.84rem', lineHeight: 1.5, marginBottom: '12px' }}>
-              Only verified accounts can access the dashboard. Please verify your email via the confirmation link sent to your inbox.
+              Enter the six-digit verification code sent to your email before logging in.
             </p>
             <button
               type="button"
@@ -222,18 +221,17 @@ export const Login = () => {
               className="btn btn-secondary btn-sm"
               style={{ width: '100%', background: '#FFFFFF', color: 'var(--accent-gold)' }}
             >
-              <RefreshCw size={14} /> Resend Verification Link
+              <RefreshCw size={14} /> Resend Verification Code
             </button>
 
-            {resendStatus?.dev_url && (
+            {resendStatus && (
               <div style={{ marginTop: '10px' }}>
-                <a
-                  href={resendStatus.dev_url}
-                  className="btn btn-primary btn-sm"
-                  style={{ width: '100%' }}
-                >
-                  Verify Email Now (Dev Link) →
-                </a>
+                <p style={{ margin: '0 0 8px', color: resendStatus.type === 'error' ? '#b91c1c' : 'var(--text-muted)' }}>{resendStatus.message}</p>
+                {resendStatus.type === 'success' && (
+                  <Link to={`/verify-email?email=${encodeURIComponent(email)}`} className="btn btn-primary btn-sm" style={{ width: '100%' }}>
+                    Enter verification code <ArrowRight size={15} />
+                  </Link>
+                )}
               </div>
             )}
           </div>

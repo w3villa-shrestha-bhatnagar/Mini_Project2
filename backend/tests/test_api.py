@@ -10,6 +10,7 @@ from app.main import app
 from app.database import db_manager
 from app.cron import check_expired_plans
 from datetime import datetime, timezone, timedelta
+from unittest.mock import patch
 
 def run_tests():
     print("🚀 Starting comprehensive backend integration tests...")
@@ -23,43 +24,51 @@ def run_tests():
         # 2. Standard Signup
         import time
         test_email = f"testuser_{int(time.time())}@example.com"
+        verification_codes = {}
+
+        async def capture_verification_code(email, name, otp):
+            verification_codes[email] = otp
+            return True
+
         signup_payload = {
             "name": "Alex Mercer",
             "email": test_email,
             "password": "Password123!"
         }
-        resp = client.post("/api/auth/signup", json=signup_payload)
+        with patch("app.routes.auth.send_verification_otp", side_effect=capture_verification_code):
+            resp = client.post("/api/auth/signup", json=signup_payload)
         assert resp.status_code == 201, f"Signup failed: {resp.text}"
         signup_data = resp.json()
         assert signup_data["user"]["is_verified"] is False
-        dev_otp = signup_data.get("dev_otp")
-        assert dev_otp is not None
-        print(f"✅ 2. Standard signup passed (is_verified=False, OTP sent)")
+        print("✅ 2. Standard signup created an unverified account and sent an OTP")
 
-        # 3. Login before verification (should be blocked per requirement 3.1)
+        # 3. Login is blocked until OTP verification
         resp = client.post("/api/auth/login", json={
             "email": test_email,
             "password": "Password123!"
         })
-        assert resp.status_code == 403, f"Unverified login should be blocked with 403: {resp.text}"
-        print("✅ 3. Unverified login properly blocked (403 Forbidden)")
+        assert resp.status_code == 403, f"Unverified login should be blocked: {resp.text}"
+        assert resp.headers.get("X-Account-Unverified") == "true"
 
-        # 4. Email Verification through OTP
-        resp = client.post("/api/auth/verify-otp", json={"email": test_email, "otp": dev_otp})
-        assert resp.status_code == 200, f"Email verification failed: {resp.text}"
-        verify_data = resp.json()
-        assert verify_data["user"]["is_verified"] is True
-        user_jwt = verify_data["access_token"]
+        resp = client.post("/api/auth/verify-otp", json={
+            "email": test_email,
+            "otp": verification_codes[test_email]
+        })
+        assert resp.status_code == 200, f"OTP verification failed: {resp.text}"
+
+        # Login after successful verification
+        resp = client.post("/api/auth/login", json={
+            "email": test_email,
+            "password": "Password123!"
+        })
+        assert resp.status_code == 200, f"Login failed after signup: {resp.text}"
+        user_jwt = resp.json()["access_token"]
         auth_headers = {"Authorization": f"Bearer {user_jwt}"}
-        print("✅ 4. Email verification passed (is_verified=True, JWT issued)")
+        print("✅ 3. OTP verification and subsequent login passed")
 
-        # 5. Login after verification
-        resp = client.post("/api/auth/login", json={
-            "email": test_email,
-            "password": "Password123!"
-        })
-        assert resp.status_code == 200, f"Verified login failed: {resp.text}"
-        print("✅ 5. Verified login succeeded")
+        # 4. Account now reports verified after correct OTP entry
+        assert resp.json()["user"]["is_verified"] is True
+        print("✅ 4. Account is verified only after the correct email OTP")
 
         # 6. Social Login with Account Merge (Requirement 1.1)
         # We simulate Google login using the SAME email: testuser_alex@example.com

@@ -295,6 +295,7 @@ export const Profile = () => {
               {isPaidActive ? 'Extend / Upgrade Pass' : 'Unlock VIP Pass →'}
             </Link>
           </div>
+
         </div>
 
         {/* Right Column: Profile Details & Address Form */}

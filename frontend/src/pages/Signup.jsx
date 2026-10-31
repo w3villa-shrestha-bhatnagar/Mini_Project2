@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Sparkles, Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle, Info } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 
 export const Signup = () => {
   const [name, setName] = useState('');
@@ -185,7 +185,7 @@ export const Signup = () => {
           </div>
         )}
 
-        {/* Success / Verification Link Banner */}
+        {/* Signup OTP Notice */}
         {successInfo ? (
           <div style={{
             padding: '24px',
@@ -196,34 +196,18 @@ export const Signup = () => {
             textAlign: 'center'
           }}>
             <CheckCircle size={48} color="var(--accent-green)" style={{ margin: '0 auto 16px' }} />
-            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>Verification Email Sent!</h3>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>Verification Code Sent</h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '20px' }}>
-              We have sent a verification link to <b>{email}</b>. You must click the confirmation link to activate your account before logging in.
+              Enter the six-digit code sent to <b>{email}</b> to activate your account.
             </p>
-
-            {/* Development shortcut button */}
-            {successInfo.dev_verification_url && (
-              <div style={{
-                background: '#FFF5F8',
-                border: '1px dashed rgba(244, 114, 182, 0.5)',
-                padding: '14px',
-                borderRadius: 'var(--radius-md)',
-                marginTop: '16px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--primary)', marginBottom: '8px', fontWeight: 600 }}>
-                  <Info size={14} /> Local Dev Helper
-                </div>
-                <a
-                  href={successInfo.dev_verification_url}
-                  className="btn btn-primary btn-sm"
-                  style={{ width: '100%' }}
-                >
-                  Click here to verify instantly →
-                </a>
-              </div>
-            )}
-
-            <div style={{ marginTop: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => navigate(`/verify-email?email=${encodeURIComponent(email)}`)}
+              >
+                Enter verification code <ArrowRight size={17} />
+              </button>
               <Link to="/login" style={{ color: 'var(--primary)', fontSize: '0.88rem', textDecoration: 'none', fontWeight: 600 }}>
                 Return to Login
               </Link>

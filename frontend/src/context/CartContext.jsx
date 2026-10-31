@@ -3,17 +3,72 @@ import { useAuth } from './AuthContext';
 
 const CartContext = createContext(null);
 
+const getCartStorageKey = (user) => {
+  if (!user) return 'auramart_cart_guest';
+  const userId = user.id || user._id || user.email;
+  return `auramart_cart_user_${encodeURIComponent(String(userId))}`;
+};
+
+const readCartItems = (storageKey) => {
+  try {
+    return JSON.parse(localStorage.getItem(storageKey) || '[]');
+  } catch {
+    return [];
+  }
+};
+
 export const CartProvider = ({ children }) => {
-  const [items, setItems] = useState(() => {
-    const saved = localStorage.getItem('auramart_cart');
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const { user } = useAuth();
+  const cartStorageKey = getCartStorageKey(user);
+  const [cartState, setCartState] = useState(() => ({
+    storageKey: cartStorageKey,
+    items: readCartItems(cartStorageKey)
+  }));
+  const [lastAddedProduct, setLastAddedProduct] = useState(null);
+  const [cartAddVersion, setCartAddVersion] = useState(0);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const items = cartState.storageKey === cartStorageKey ? cartState.items : [];
 
   useEffect(() => {
-    localStorage.setItem('auramart_cart', JSON.stringify(items));
-  }, [items]);
+    if (cartState.storageKey !== cartStorageKey) {
+      setCartState({ storageKey: cartStorageKey, items: readCartItems(cartStorageKey) });
+      setIsCartOpen(false);
+      setLastAddedProduct(null);
+      setCartAddVersion(version => version + 1);
+    }
+  }, [cartState.storageKey, cartStorageKey]);
+
+  useEffect(() => {
+    if (cartState.storageKey === cartStorageKey) {
+      localStorage.setItem(cartStorageKey, JSON.stringify(cartState.items));
+    }
+  }, [cartState, cartStorageKey]);
+
+  useEffect(() => {
+    localStorage.removeItem('auramart_cart');
+  }, []);
+
+  const setItems = (updateItems) => {
+    setCartState(current => {
+      const currentItems = current.storageKey === cartStorageKey
+        ? current.items
+        : readCartItems(cartStorageKey);
+      const nextItems = typeof updateItems === 'function'
+        ? updateItems(currentItems)
+        : updateItems;
+      return { storageKey: cartStorageKey, items: nextItems };
+    });
+  };
+
+  useEffect(() => {
+    const handleLogout = () => {
+      setIsCartOpen(false);
+      setLastAddedProduct(null);
+    };
+
+    window.addEventListener('auramart:logout', handleLogout);
+    return () => window.removeEventListener('auramart:logout', handleLogout);
+  }, []);
 
   const addToCart = (product) => {
     setItems(prev => {
@@ -23,6 +78,8 @@ export const CartProvider = ({ children }) => {
       }
       return [...prev, { ...product, quantity: 1 }];
     });
+    setLastAddedProduct(product.title);
+    setCartAddVersion(version => version + 1);
     setIsCartOpen(true);
   };
 
@@ -35,14 +92,14 @@ export const CartProvider = ({ children }) => {
       return prev.map(i => {
         if (i.id === productId) {
           const newQty = i.quantity + delta;
-          return newQty > 0 ? { ...i, quantity: newQty } : null;
+          return { ...i, quantity: Math.max(1, newQty) };
         }
         return i;
-      }).filter(Boolean);
+      });
     });
   };
 
-  const clearCart = () => setItems([]);
+  const clearLastAddedProduct = () => setLastAddedProduct(null);
 
   // Calculate discount based on user subscription plan
   const plan = user?.subscription?.plan || 'free';
@@ -61,13 +118,15 @@ export const CartProvider = ({ children }) => {
       addToCart,
       removeFromCart,
       updateQuantity,
-      clearCart,
       subtotal,
       discountPercent,
       discountAmount,
       shippingFee,
       total,
-      totalCount: items.reduce((sum, i) => sum + i.quantity, 0)
+      totalCount: items.reduce((sum, i) => sum + i.quantity, 0),
+      lastAddedProduct,
+      cartAddVersion,
+      clearLastAddedProduct
     }}>
       {children}
     </CartContext.Provider>

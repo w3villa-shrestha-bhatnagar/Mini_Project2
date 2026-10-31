@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { ShoppingBag, ShieldCheck, User, LogOut, Sparkles, Crown } from 'lucide-react';
 
 export const Navbar = () => {
+  const [showLogoutConfirmation, setShowLogoutConfirmation] = React.useState(false);
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const { totalCount, setIsCartOpen } = useCart();
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export const Navbar = () => {
 
   const handleLogout = () => {
     logout();
+    setShowLogoutConfirmation(false);
     navigate('/');
   };
 
@@ -41,6 +43,7 @@ export const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
+    <>
     <nav style={{
       position: 'fixed',
       top: 0,
@@ -120,6 +123,18 @@ export const Navbar = () => {
             Store Location
           </Link>
           <Link
+            to="/my-order"
+            style={{
+              textDecoration: 'none',
+              fontSize: '0.92rem',
+              fontWeight: 500,
+              color: isActive('/my-order') ? 'var(--primary)' : 'var(--text-muted)',
+              transition: 'color 0.2s'
+            }}
+          >
+            My Order
+          </Link>
+          <Link
             to="/plans"
             style={{
               textDecoration: 'none',
@@ -140,7 +155,7 @@ export const Navbar = () => {
         {/* Right Nav Actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {/* Cart Icon Button */}
-          <button
+          {isAuthenticated && <button
             onClick={() => setIsCartOpen(true)}
             style={{
               position: 'relative',
@@ -178,7 +193,7 @@ export const Navbar = () => {
                 {totalCount}
               </span>
             )}
-          </button>
+          </button>}
 
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -232,7 +247,7 @@ export const Navbar = () => {
 
               {/* Logout Button */}
               <button
-                onClick={handleLogout}
+                onClick={() => setShowLogoutConfirmation(true)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -260,5 +275,42 @@ export const Navbar = () => {
         </div>
       </div>
     </nav>
+    {showLogoutConfirmation && (
+      <div
+        className="modal-overlay"
+        onClick={() => setShowLogoutConfirmation(false)}
+      >
+        <div
+          className="modal-content"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="logout-confirmation-title"
+          onClick={event => event.stopPropagation()}
+          style={{ maxWidth: '400px', padding: '28px' }}
+        >
+          <h2 id="logout-confirmation-title" style={{ fontSize: '1.3rem', marginBottom: '10px' }}>Log out?</h2>
+          <p style={{ color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: '24px' }}>
+            Are you sure you want to log out of your AuraMart account?
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowLogoutConfirmation(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleLogout}
+            >
+              <LogOut size={16} /> Log out
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 };

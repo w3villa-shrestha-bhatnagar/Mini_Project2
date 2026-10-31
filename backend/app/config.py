@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     FACEBOOK_APP_SECRET: Optional[str] = "placeholder_facebook_secret"
     
     # SMTP
+    BREVO_SMTP_HOST: str = "smtp-relay.brevo.com"
+    BREVO_SMTP_PORT: int = 587
+    BREVO_SMTP_USER: str = "c0e1d4001@smtp-brevo.com"
+    BREVO_SMTP_PASSWORD: Optional[str] = ""
+    BREVO_SENDER_EMAIL: str = "no-reply@auramart.com"
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USER: Optional[str] = ""
