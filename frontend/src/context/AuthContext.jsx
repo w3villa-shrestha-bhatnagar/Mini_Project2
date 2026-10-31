@@ -106,17 +106,15 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  const verifyEmail = async (tokenParam) => {
-    const res = await fetch(`${API_URL}/auth/verify-email?token=${encodeURIComponent(tokenParam)}`);
+  const verifyOtp = async (email, otp) => {
+    const res = await fetch(`${API_URL}/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp })
+    });
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.detail || 'Email verification failed');
-    }
-    if (data.access_token) {
-      setToken(data.access_token);
-      setUser(data.user);
-      localStorage.setItem('auramart_token', data.access_token);
-      localStorage.setItem('auramart_user', JSON.stringify(data.user));
+      throw new Error(data.detail || 'Code verification failed');
     }
     return data;
   };
@@ -176,6 +174,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('auramart_token');
     localStorage.removeItem('auramart_user');
+    window.dispatchEvent(new Event('auramart:logout'));
   };
 
   return (
@@ -186,7 +185,7 @@ export const AuthProvider = ({ children }) => {
       login,
       signup,
       socialLogin,
-      verifyEmail,
+      verifyOtp,
       resendVerification,
       updateProfile,
       uploadAvatar,

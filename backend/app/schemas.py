@@ -23,6 +23,10 @@ class VerifyEmailRequest(BaseModel):
 class ResendVerificationRequest(BaseModel):
     email: EmailStr
 
+class VerifyOtpRequest(BaseModel):
+    email: EmailStr
+    otp: str = Field(..., min_length=6, max_length=6, pattern=r"^\d{6}$")
+
 class AddressModel(BaseModel):
     formatted_address: Optional[str] = None
     street: Optional[str] = None
@@ -48,6 +52,18 @@ class VerifyPaymentRequest(BaseModel):
     razorpay_signature: str
     plan_name: str
     duration_hours: int
+
+class ProductOrderItem(BaseModel):
+    product_id: str
+    quantity: int = Field(..., ge=1, le=99)
+
+class CreateProductOrderRequest(BaseModel):
+    items: List[ProductOrderItem] = Field(..., min_length=1, max_length=50)
+
+class VerifyProductPaymentRequest(BaseModel):
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
 
 class AdminUpdateRoleRequest(BaseModel):
     role: str  # 'user' or 'admin'

@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
-import { Check, Sparkles, Crown, Clock, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Check, Sparkles, Crown, Clock, ArrowRight, ShieldCheck, Smartphone, CreditCard, X } from 'lucide-react';
+import { siPhonepe, siPaytm } from 'simple-icons';
+import QRCode from 'qrcode';
 import confetti from 'canvas-confetti';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
+const BrandIcon = ({ icon }) => (
+  <svg aria-hidden="true" viewBox="0 0 24 24" width="19" height="19" focusable="false">
+    <path d={icon.path} fill={`#${icon.hex}`} />
+  </svg>
+);
+
 export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
   const [selectedDuration, setSelectedDuration] = useState(plan.available_durations[0]?.hours || 0);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('upi');
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [upiQrDataUrl, setUpiQrDataUrl] = useState('');
+  const [upiQrExpiresAt, setUpiQrExpiresAt] = useState(null);
+  const [upiSecondsRemaining, setUpiSecondsRemaining] = useState(300);
 
   const activePlanId = user?.subscription?.plan || 'free';
   const isCurrentActive = activePlanId === plan.id && user?.subscription?.status === 'active';
@@ -16,6 +29,43 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
 
   const currentDurationObj = plan.available_durations.find(d => d.hours === selectedDuration) || plan.available_durations[0];
   const price = currentDurationObj?.price || 0;
+
+  const generateDemoUpiQr = async () => {
+    const generatedAt = Date.now();
+    const expiresAt = generatedAt + 5 * 60 * 1000;
+    const payload = JSON.stringify({
+      type: 'AURAMART_DEMO_UPI_QR_NOT_PAYABLE',
+      plan: plan.id,
+      duration_hours: selectedDuration,
+      amount_inr: price,
+      generated_at: generatedAt,
+      expires_at: expiresAt
+    });
+
+    try {
+      const qrDataUrl = await QRCode.toDataURL(payload, {
+        width: 200,
+        margin: 1,
+        color: { dark: '#17202a', light: '#ffffff' }
+      });
+      setUpiQrDataUrl(qrDataUrl);
+      setUpiQrExpiresAt(expiresAt);
+      setUpiSecondsRemaining(300);
+    } catch (error) {
+      onPaymentError('Could not generate the demo UPI QR. Please use Razorpay checkout.');
+    }
+  };
+
+  React.useEffect(() => {
+    if (!upiQrExpiresAt) return undefined;
+
+    const updateRemainingTime = () => {
+      setUpiSecondsRemaining(Math.max(0, Math.ceil((upiQrExpiresAt - Date.now()) / 1000)));
+    };
+    updateRemainingTime();
+    const timerId = window.setInterval(updateRemainingTime, 1000);
+    return () => window.clearInterval(timerId);
+  }, [upiQrExpiresAt]);
 
   const handleCheckout = async () => {
     if (isFree) return;
@@ -64,6 +114,28 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
         description: `${plan.name} (${selectedDuration} Hours Access)`,
         image: "https://api.dicebear.com/7.x/initials/svg?seed=AuraMart",
         order_id: order.order_id,
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "Pay using UPI",
+                instruments: [{ method: "upi" }]
+              },
+              other: {
+                name: "Other payment methods",
+                instruments: [
+                  { method: "card" },
+                  { method: "netbanking" },
+                  { method: "wallet" }
+                ]
+              }
+            },
+            sequence: selectedPaymentMethod === 'other'
+              ? ["block.other", "block.upi"]
+              : ["block.upi", "block.other"],
+            preferences: { show_default_blocks: false }
+          }
+        },
         handler: async function (response) {
           // 3. Verify Payment
           try {
@@ -142,6 +214,7 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
   };
 
   return (
+    <>
     <div
       className="glass-panel card-hover"
       style={{
@@ -326,7 +399,7 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
           </button>
         ) : (
           <button
-            onClick={handleCheckout}
+            onClick={() => setShowPaymentOptions(true)}
             disabled={processing}
             className={`btn ${isGold ? 'btn-gold' : 'btn-primary'}`}
             style={{ width: '100%' }}
@@ -340,5 +413,102 @@ export const PlanCard = ({ plan, user, onPaymentSuccess, onPaymentError }) => {
         )}
       </div>
     </div>
+    {showPaymentOptions && (
+      <div
+        role="presentation"
+        onClick={() => !processing && setShowPaymentOptions(false)}
+        style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(17, 24, 39, 0.52)', display: 'grid', placeItems: 'center', padding: '20px' }}
+      >
+        <section
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`payment-options-title-${plan.id}`}
+          onClick={event => event.stopPropagation()}
+          style={{ width: '100%', maxWidth: '440px', padding: '24px', background: '#FFFFFF', borderRadius: '12px', boxShadow: '0 20px 60px rgba(17, 24, 39, 0.24)' }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '20px' }}>
+            <div>
+              <p style={{ margin: '0 0 5px', color: 'var(--primary)', fontSize: '0.76rem', fontWeight: 800, textTransform: 'uppercase' }}>Checkout</p>
+              <h2 id={`payment-options-title-${plan.id}`} style={{ margin: 0, fontSize: '1.35rem' }}>Payment Options</h2>
+              <p style={{ margin: '7px 0 0', color: 'var(--text-muted)', fontSize: '0.86rem' }}>{plan.name} · {selectedDuration} hours · ₹{price}</p>
+            </div>
+            <button
+              type="button"
+              aria-label="Close payment options"
+              onClick={() => setShowPaymentOptions(false)}
+              disabled={processing}
+              style={{ border: 0, background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px' }}
+            >
+              <X size={21} />
+            </button>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            {[
+              { id: 'upi', label: 'UPI apps' },
+              { id: 'other', label: 'Other methods' }
+            ].map(option => (
+              <button
+                key={option.id}
+                type="button"
+                aria-pressed={selectedPaymentMethod === option.id}
+                onClick={() => {
+                  setSelectedPaymentMethod(option.id);
+                  if (option.id === 'upi') {
+                    generateDemoUpiQr();
+                  } else {
+                    setUpiQrDataUrl('');
+                    setUpiQrExpiresAt(null);
+                  }
+                }}
+                style={{ minHeight: '76px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '10px 8px', borderRadius: '8px', border: selectedPaymentMethod === option.id ? '1.5px solid var(--primary)' : '1px solid var(--border-glass)', background: selectedPaymentMethod === option.id ? 'rgba(244, 114, 182, 0.1)' : '#FFFFFF', color: 'var(--text-main)', fontWeight: 700, cursor: 'pointer' }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+                  {option.id === 'upi' ? <Smartphone size={18} /> : <CreditCard size={18} />}
+                  {option.label}
+                </span>
+                {option.id === 'upi' && (
+                  <span aria-label="PhonePe and Paytm supported UPI apps" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                    <span title="PhonePe"><BrandIcon icon={siPhonepe} /></span>
+                    <span title="Paytm"><BrandIcon icon={siPaytm} /></span>
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+          <p style={{ margin: '10px 0 20px', color: 'var(--text-muted)', fontSize: '0.78rem', lineHeight: 1.45 }}>
+            {selectedPaymentMethod === 'other'
+              ? 'Cards, net banking, and wallets will appear first in Razorpay.'
+              : 'PhonePe and Paytm are available through Razorpay UPI where supported.'}
+          </p>
+          {selectedPaymentMethod === 'upi' && upiQrDataUrl && (
+            <div style={{ marginBottom: '18px', padding: '16px', border: '1px solid var(--border-glass)', borderRadius: '10px', textAlign: 'center', background: '#FFFFFF' }}>
+              <div style={{ marginBottom: '10px', fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: upiSecondsRemaining > 0 ? 'var(--text-main)' : '#b91c1c' }}>
+                {upiSecondsRemaining > 0
+                  ? `QR expires in ${String(Math.floor(upiSecondsRemaining / 60)).padStart(2, '0')}:${String(upiSecondsRemaining % 60).padStart(2, '0')}`
+                  : 'QR expired'}
+              </div>
+              <img src={upiQrDataUrl} alt="Demo-only UPI QR code; not a payment code" style={{ display: 'block', width: '180px', height: '180px', margin: '0 auto 8px', imageRendering: 'pixelated' }} />
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.74rem' }}>Demo QR only. Complete real payments through Razorpay.</div>
+              {upiSecondsRemaining === 0 && (
+                <button type="button" onClick={generateDemoUpiQr} style={{ marginTop: '10px', border: 0, background: 'transparent', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer' }}>
+                  Generate a new QR
+                </button>
+              )}
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={handleCheckout}
+            disabled={processing}
+            className={`btn ${isGold ? 'btn-gold' : 'btn-primary'}`}
+            style={{ width: '100%' }}
+          >
+            {processing ? 'Opening Razorpay...' : <>Continue to payment <ArrowRight size={17} /></>}
+          </button>
+        </section>
+      </div>
+    )}
+    </>
   );
 };

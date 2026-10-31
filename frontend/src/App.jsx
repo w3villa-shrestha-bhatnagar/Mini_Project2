@@ -8,6 +8,7 @@ import { CartDrawer } from './components/CartDrawer';
 
 import { Home } from './pages/Home';
 import { Shop } from './pages/Shop';
+import { MyOrder } from './pages/MyOrder';
 import { Plans } from './pages/Plans';
 import { Signup } from './pages/Signup';
 import { Login } from './pages/Login';
@@ -55,6 +56,7 @@ export const App = () => {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/shop" element={<Shop />} />
+                <Route path="/my-order" element={<MyOrder />} />
                 <Route path="/plans" element={<Plans />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />

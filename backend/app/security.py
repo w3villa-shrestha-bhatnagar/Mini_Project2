@@ -65,11 +65,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> Dict[str, Any
     return user
 
 async def get_current_verified_user(current_user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
-    if not current_user.get("is_verified", False):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Account email is not verified. Please check your email to activate your account."
-        )
+    # Email verification is intentionally disabled for this project.
+    # Keep this dependency as a compatibility wrapper so other endpoints continue to work normally.
     return current_user
 
 async def get_current_admin_user(current_user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:

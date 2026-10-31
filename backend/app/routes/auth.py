@@ -1,19 +1,52 @@
 from datetime import datetime, timezone, timedelta
 from typing import Dict, Any
+import hashlib
+import hmac
+import secrets
 from fastapi import APIRouter, HTTPException, status, Query
 from app.config import settings
 from app.database import db_manager
 from app.schemas import (
-    UserSignup, UserLogin, SocialLogin, ResendVerificationRequest
+    UserSignup, UserLogin, SocialLogin, ResendVerificationRequest, VerifyOtpRequest
 )
 from app.security import (
-    hash_password, verify_password, create_access_token,
-    generate_verification_token
+    hash_password, verify_password, create_access_token
 )
-from app.services.email_service import send_verification_email
 from app.services.social_auth import verify_google_token, verify_facebook_token
+from app.services.email_service import send_verification_otp
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+OTP_TTL_MINUTES = 10
+OTP_MAX_ATTEMPTS = 5
+
+def _otp_digest(otp: str) -> str:
+    return hmac.new(settings.JWT_SECRET.encode(), otp.encode(), hashlib.sha256).hexdigest()
+
+async def _send_account_otp(user: Dict[str, Any]):
+    user_id = str(user["_id"])
+    existing_codes = await db_manager.tokens.find({"user_id": user_id, "type": "email_otp"}).to_list(length=100)
+    for existing_code in existing_codes:
+        await db_manager.tokens.delete_one({"_id": existing_code["_id"]})
+
+    otp = f"{secrets.randbelow(1_000_000):06d}"
+    now = datetime.now(timezone.utc)
+    await db_manager.tokens.insert_one({
+        "user_id": user_id,
+        "email": user["email"],
+        "type": "email_otp",
+        "otp_digest": _otp_digest(otp),
+        "attempts": 0,
+        "expires_at": (now + timedelta(minutes=OTP_TTL_MINUTES)).isoformat(),
+        "created_at": now.isoformat()
+    })
+
+    if not await send_verification_otp(user["email"], user.get("name", "there"), otp):
+        codes = await db_manager.tokens.find({"user_id": user_id, "type": "email_otp"}).to_list(length=100)
+        for code in codes:
+            await db_manager.tokens.delete_one({"_id": code["_id"]})
+        return False
+    return True
 
 def format_user_response(user: Dict[str, Any]) -> Dict[str, Any]:
     return {
@@ -47,9 +80,6 @@ async def signup(payload: UserSignup):
         )
 
     now_iso = datetime.now(timezone.utc).isoformat()
-    token = generate_verification_token()
-    token_expiry = (datetime.now(timezone.utc) + timedelta(hours=24)).isoformat()
-
     avatar_url = f"https://api.dicebear.com/7.x/initials/svg?seed={payload.name.replace(' ', '+')}"
 
     new_user = {
@@ -79,72 +109,65 @@ async def signup(payload: UserSignup):
     user_id = str(insert_res.inserted_id)
     new_user["_id"] = user_id
 
-    # Store verification token
-    await db_manager.tokens.insert_one({
-        "token": token,
-        "user_id": user_id,
-        "email": email,
-        "type": "email_verification",
-        "expires_at": token_expiry,
-        "created_at": now_iso
-    })
-
-    # Send verification email
-    await send_verification_email(email, payload.name, token)
-
-    verification_url = f"{settings.FRONTEND_URL}/verify-email?token={token}"
+    if not await _send_account_otp(new_user):
+        await db_manager.users.delete_one({"_id": user_id})
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="We could not send your verification code. Please try again later."
+        )
 
     return {
         "status": "success",
-        "message": "Signup successful! We have sent a verification link to your registered email address.",
-        "user": format_user_response(new_user),
-        "dev_verification_url": verification_url,  # For easy testing in dev/demo environments
-        "verification_token": token
+        "message": "Signup successful. A six-digit verification code was sent to your email.",
+        "user": format_user_response(new_user)
     }
 
 @router.get("/verify-email")
 async def verify_email(token: str = Query(..., description="Email verification token")):
-    token_doc = await db_manager.tokens.find_one({"token": token, "type": "email_verification"})
-    if not token_doc:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or expired verification link."
-        )
-
-    # Check token expiry
-    expires_at_str = token_doc.get("expires_at")
-    if expires_at_str:
-        expires_at = datetime.fromisoformat(expires_at_str)
-        if datetime.now(timezone.utc) > expires_at:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Verification link has expired. Please request a new verification email."
-            )
-
-    user_id = token_doc.get("user_id")
-    user = await db_manager.users.find_one({"_id": user_id})
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User account not found.")
-
-    # Mark user as verified
-    now_iso = datetime.now(timezone.utc).isoformat()
-    await db_manager.users.update_one(
-        {"_id": user_id},
-        {"$set": {"is_verified": True, "updated_at": now_iso}}
+    raise HTTPException(
+        status_code=status.HTTP_410_GONE,
+        detail="Email verification now uses a six-digit code. Enter the code sent to your email."
     )
 
-    # Invalidate token
-    await db_manager.tokens.delete_one({"_id": token_doc["_id"]})
+@router.post("/verify-otp")
+async def verify_otp(payload: VerifyOtpRequest):
+    email = payload.email.lower().strip()
+    user = await db_manager.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired verification code.")
+    if user.get("is_verified"):
+        return {"status": "success", "message": "Email is already verified."}
 
-    # Issue JWT token so user is automatically authenticated
+    user_id = str(user["_id"])
+    code = await db_manager.tokens.find_one({"user_id": user_id, "type": "email_otp"})
+    if not code:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired verification code.")
+
+    expires_at = datetime.fromisoformat(code["expires_at"])
+    if expires_at <= datetime.now(timezone.utc):
+        await db_manager.tokens.delete_one({"_id": code["_id"]})
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification code expired. Request a new code.")
+
+    if not hmac.compare_digest(code["otp_digest"], _otp_digest(payload.otp)):
+        attempts = int(code.get("attempts", 0)) + 1
+        if attempts >= OTP_MAX_ATTEMPTS:
+            await db_manager.tokens.delete_one({"_id": code["_id"]})
+            detail = "Too many incorrect attempts. Request a new verification code."
+        else:
+            await db_manager.tokens.update_one({"_id": code["_id"]}, {"$set": {"attempts": attempts}})
+            detail = "Incorrect verification code. Please try again."
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+    await db_manager.users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"is_verified": True, "updated_at": now_iso}}
+    )
+    await db_manager.tokens.delete_one({"_id": code["_id"]})
     user["is_verified"] = True
-    access_token = create_access_token({"sub": user_id, "email": user["email"], "role": user.get("role", "user")})
-
     return {
         "status": "success",
-        "message": "Email verified successfully! Your account is now active.",
-        "access_token": access_token,
-        "token_type": "bearer",
+        "message": "Email verified successfully. You can now log in.",
         "user": format_user_response(user)
     }
 
@@ -154,37 +177,29 @@ async def resend_verification(payload: ResendVerificationRequest):
     user = await db_manager.users.find_one({"email": email})
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No account registered with this email.")
+    if user.get("is_verified"):
+        return {"status": "success", "message": "This email is already verified."}
 
-    if user.get("is_verified", False):
-        return {
-            "status": "already_verified",
-            "message": "Your email address is already verified. You can proceed to log in."
-        }
+    user_id = str(user["_id"])
+    existing_code = await db_manager.tokens.find_one({"user_id": user_id, "type": "email_otp"})
+    if existing_code:
+        created_at = datetime.fromisoformat(existing_code["created_at"])
+        cooldown_remaining = 60 - int((datetime.now(timezone.utc) - created_at).total_seconds())
+        if cooldown_remaining > 0:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=f"Please wait {cooldown_remaining} seconds before requesting another code."
+            )
 
-    now_iso = datetime.now(timezone.utc).isoformat()
-    token = generate_verification_token()
-    token_expiry = (datetime.now(timezone.utc) + timedelta(hours=24)).isoformat()
-
-    # Invalidate old tokens for this user
-    await db_manager.tokens.delete_one({"user_id": str(user["_id"]), "type": "email_verification"})
-
-    await db_manager.tokens.insert_one({
-        "token": token,
-        "user_id": str(user["_id"]),
-        "email": email,
-        "type": "email_verification",
-        "expires_at": token_expiry,
-        "created_at": now_iso
-    })
-
-    await send_verification_email(email, user.get("name", "User"), token)
-    verification_url = f"{settings.FRONTEND_URL}/verify-email?token={token}"
+    if not await _send_account_otp(user):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="We could not send your verification code. Please try again later."
+        )
 
     return {
         "status": "success",
-        "message": "A new verification link has been sent to your email address.",
-        "dev_verification_url": verification_url,
-        "verification_token": token
+        "message": "A new verification code was sent to your email."
     }
 
 @router.post("/login")
@@ -204,11 +219,10 @@ async def login(payload: UserLogin):
             detail="Invalid email or password."
         )
 
-    # Acceptance Criteria 3.1: "Only verified accounts can access the dashboard after login."
     if not user.get("is_verified", False):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Your email is not verified yet. Please check your inbox to activate your account.",
+            detail="Verify your email with the six-digit code before logging in.",
             headers={"X-Account-Unverified": "true"}
         )
 
