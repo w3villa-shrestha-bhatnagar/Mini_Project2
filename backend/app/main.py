@@ -10,7 +10,7 @@ from app.config import settings
 from app.database import db_manager
 from app.security import hash_password
 from app.cron import start_cron, stop_cron
-from app.routes import auth, profile, plans, payments, admin, products
+from app.routes import auth, profile, plans, payments, admin, products, stores
 
 # Configure logging
 logging.basicConfig(
@@ -107,6 +107,7 @@ app.include_router(plans.router, prefix="/api")
 app.include_router(payments.router, prefix="/api")
 app.include_router(admin.router, prefix="/api")
 app.include_router(products.router, prefix="/api")
+app.include_router(stores.router, prefix="/api")
 
 @app.get("/")
 async def root():

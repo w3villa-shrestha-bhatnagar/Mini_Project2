@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Sparkles, Mail, Lock, User, ArrowRight, CheckCircle, AlertCircle, Info } from 'lucide-react';
@@ -10,6 +10,7 @@ export const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successInfo, setSuccessInfo] = useState(null);
+  const googleBtnRef = useRef(null);
 
   const { signup, socialLogin } = useAuth();
   const navigate = useNavigate();
@@ -83,6 +84,55 @@ export const Signup = () => {
 
       if (data.is_merged) {
         alert(`Account merged! We linked your ${provider.toUpperCase()} login to your existing account with ${data.user.email}.`);
+      }
+      navigate('/profile');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initialize Google Identity Services
+  useEffect(() => {
+    if (window.google && google.accounts && google.accounts.id) {
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+      if (clientId && clientId !== 'your_google_client_id.apps.googleusercontent.com') {
+        google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+
+        if (googleBtnRef.current) {
+          google.accounts.id.renderButton(googleBtnRef.current, {
+            theme: 'outline',
+            size: 'large',
+            width: '100%',
+            type: 'standard',
+            text: 'continue_with',
+            shape: 'rectangular',
+            logo_alignment: 'left'
+          });
+        }
+      }
+    }
+  }, []);
+
+  const handleGoogleCredentialResponse = async (response) => {
+    setError('');
+    setLoading(true);
+
+    try {
+      const data = await socialLogin('google', {
+        token: response.credential,
+        email: '',
+        name: ''
+      });
+
+      if (data.is_merged) {
+        alert(`Account merged! We linked your Google login to your existing account with ${data.user.email}.`);
       }
       navigate('/profile');
     } catch (err) {
@@ -209,7 +259,7 @@ export const Signup = () => {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#1877F2">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
-                Continue with Facebook (Auto-Merge)
+                Continue with Facebook (Demo)
               </button>
             </div>
 

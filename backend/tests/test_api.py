@@ -32,9 +32,9 @@ def run_tests():
         assert resp.status_code == 201, f"Signup failed: {resp.text}"
         signup_data = resp.json()
         assert signup_data["user"]["is_verified"] is False
-        verification_token = signup_data.get("verification_token")
-        assert verification_token is not None
-        print(f"✅ 2. Standard signup passed (is_verified=False, token={verification_token[:8]}...)")
+        dev_otp = signup_data.get("dev_otp")
+        assert dev_otp is not None
+        print(f"✅ 2. Standard signup passed (is_verified=False, OTP sent)")
 
         # 3. Login before verification (should be blocked per requirement 3.1)
         resp = client.post("/api/auth/login", json={
@@ -44,8 +44,8 @@ def run_tests():
         assert resp.status_code == 403, f"Unverified login should be blocked with 403: {resp.text}"
         print("✅ 3. Unverified login properly blocked (403 Forbidden)")
 
-        # 4. Email Verification through Link
-        resp = client.get(f"/api/auth/verify-email?token={verification_token}")
+        # 4. Email Verification through OTP
+        resp = client.post("/api/auth/verify-otp", json={"email": test_email, "otp": dev_otp})
         assert resp.status_code == 200, f"Email verification failed: {resp.text}"
         verify_data = resp.json()
         assert verify_data["user"]["is_verified"] is True
