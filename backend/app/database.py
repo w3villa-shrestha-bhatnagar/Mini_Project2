@@ -328,6 +328,7 @@ class DatabaseManager:
     orders: Any = None
     products: Any = None
     tokens: Any = None
+    stores: Any = None
 
     async def connect(self):
         try:
@@ -352,6 +353,7 @@ class DatabaseManager:
             self.orders = LiveMongoCollection(self.db.orders)
             self.products = LiveMongoCollection(self.db.products)
             self.tokens = LiveMongoCollection(self.db.tokens)
+            self.stores = LiveMongoCollection(self.db.stores)
             self.is_live_mongo = True
             logger.info("Successfully connected to live MongoDB server!")
 
@@ -366,6 +368,7 @@ class DatabaseManager:
             self.orders = ResilientCollection("orders", os.path.join(data_dir, "orders.json"))
             self.products = ResilientCollection("products", os.path.join(data_dir, "products.json"))
             self.tokens = ResilientCollection("tokens", os.path.join(data_dir, "tokens.json"))
+            self.stores = ResilientCollection("stores", os.path.join(data_dir, "stores.json"))
             self.is_live_mongo = False
             logger.info("Resilient Data Store initialized. Ready for local execution!")
 

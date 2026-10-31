@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "aura-noida-sec58",
+    "name": "AuraMart - Noida Sector 58",
+    "address": "Sector 58, Noida, Uttar Pradesh 201301, India",
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "postal_code": "201301",
+    "country": "India",
+    "phone": "+91-XXXXXXXXXX",
+    "lat": 28.6050,
+    "lng": 77.3560,
+    "is_active": true,
+    "created_at": "2026-01-01T00:00:00+00:00",
+    "updated_at": "2026-01-01T00:00:00+00:00"
+  }
+]

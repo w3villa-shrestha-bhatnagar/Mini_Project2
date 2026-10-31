@@ -12,6 +12,7 @@ import { Plans } from './pages/Plans';
 import { Signup } from './pages/Signup';
 import { Login } from './pages/Login';
 import { VerifyEmail } from './pages/VerifyEmail';
+import { Stores } from './pages/Stores';
 import { Profile } from './pages/Profile';
 import { Admin } from './pages/Admin';
 
@@ -57,6 +58,7 @@ export const App = () => {
                 <Route path="/plans" element={<Plans />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/stores" element={<Stores />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
                 
                 {/* Protected User Profile */}

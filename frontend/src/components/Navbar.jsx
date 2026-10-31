@@ -108,6 +108,18 @@ export const Navbar = () => {
             Shop Collection
           </Link>
           <Link
+            to="/stores"
+            style={{
+              textDecoration: 'none',
+              fontSize: '0.92rem',
+              fontWeight: 500,
+              color: isActive('/stores') ? 'var(--primary)' : 'var(--text-muted)',
+              transition: 'color 0.2s'
+            }}
+          >
+            Store Location
+          </Link>
+          <Link
             to="/plans"
             style={{
               textDecoration: 'none',
